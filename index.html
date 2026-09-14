@@ -1,27 +1,67 @@
 <!doctype html>
-<html lang="en">
+<html lang="vi">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#f4f7f8" />
+    <meta name="theme-color" content="#e8f0ec" />
     <title>Starter App</title>
   </head>
   <body>
-    <main class="shell">
-      <span class="mark" aria-hidden="true">S</span>
-      <h1>Starter App</h1>
-      <p id="build" class="build">Bundle: …</p>
-      <p id="status" class="status" aria-live="polite">Checking for updates…</p>
-      <div class="actions">
-        <button id="download" class="btn btn-primary" type="button" hidden>
-          Download
-        </button>
-        <button id="later" class="btn" type="button" hidden>Later</button>
-        <button id="retry" class="btn btn-primary" type="button" hidden>
-          Retry
-        </button>
+    <div id="update-bar" class="update-bar" hidden>
+      <p id="update-text">Có bản cập nhật mới.</p>
+      <div class="update-actions">
+        <button id="download" class="btn btn-primary" type="button">Tải về</button>
+        <button id="later" class="btn" type="button">Để sau</button>
       </div>
+    </div>
+
+    <header class="top">
+      <div class="brand">
+        <span class="mark" aria-hidden="true">S</span>
+        <div>
+          <p class="brand-name">Starter App</p>
+          <p id="build" class="build">Bản: …</p>
+        </div>
+      </div>
+      <button id="check-update" class="text-btn" type="button">Cập nhật</button>
+    </header>
+
+    <main>
+      <section class="intro" aria-labelledby="intro-title">
+        <p class="eyebrow">Ứng dụng nhỏ, đủ để bắt đầu</p>
+        <h1 id="intro-title">Một túi dụng cụ trong túi.</h1>
+        <p class="lede">
+          Trang giới thiệu app với hai việc nhỏ: ghi chú cục bộ và đếm nhanh.
+          Bản web mới tới bằng OTA, không cần cài lại APK.
+        </p>
+      </section>
+
+      <section class="tools" aria-labelledby="tools-title">
+        <div class="tools-head">
+          <h2 id="tools-title">Thử ngay</h2>
+          <p>Lưu trên máy, không cần tài khoản.</p>
+        </div>
+
+        <article class="panel note-panel">
+          <h3>Ghi chú nhanh</h3>
+          <label class="sr-only" for="note">Nội dung ghi chú</label>
+          <textarea id="note" rows="5" maxlength="500" placeholder="Viết một dòng để nhớ"></textarea>
+          <p id="note-meta" class="meta">Chưa lưu</p>
+        </article>
+
+        <article class="panel tally-panel">
+          <h3>Đếm nhanh</h3>
+          <p id="tally" class="tally" aria-live="polite">0</p>
+          <div class="tally-actions">
+            <button id="tally-down" class="btn" type="button">−</button>
+            <button id="tally-up" class="btn btn-primary" type="button">+</button>
+            <button id="tally-reset" class="text-btn" type="button">Đặt lại</button>
+          </div>
+        </article>
+      </section>
     </main>
+
+    <p id="toast" class="toast" hidden role="status"></p>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>
