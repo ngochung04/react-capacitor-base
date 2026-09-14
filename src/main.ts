@@ -7,9 +7,17 @@ import {
   markAppReady,
 } from './ota.ts'
 import type { AvailableUpdate } from './ota.ts'
-
-const NOTE_KEY = 'starter-note'
-const TALLY_KEY = 'starter-tally'
+import {
+  clearDone,
+  createTodo,
+  loadTodos,
+  openCount,
+  removeTodo,
+  saveTodos,
+  toggleTodo,
+  visibleTodos,
+} from './todos.ts'
+import type { Todo, TodoFilter } from './todos.ts'
 
 function requiredElement<T extends HTMLElement>(
   selector: string,
@@ -29,17 +37,22 @@ const ui = {
   later: requiredElement('#later', HTMLButtonElement),
   checkUpdate: requiredElement('#check-update', HTMLButtonElement),
   build: requiredElement('#build', HTMLElement),
-  note: requiredElement('#note', HTMLTextAreaElement),
-  noteMeta: requiredElement('#note-meta', HTMLElement),
-  tally: requiredElement('#tally', HTMLElement),
-  tallyUp: requiredElement('#tally-up', HTMLButtonElement),
-  tallyDown: requiredElement('#tally-down', HTMLButtonElement),
-  tallyReset: requiredElement('#tally-reset', HTMLButtonElement),
+  summary: requiredElement('#summary', HTMLElement),
+  form: requiredElement('#todo-form', HTMLFormElement),
+  input: requiredElement('#todo-input', HTMLInputElement),
+  list: requiredElement('#todo-list', HTMLElement),
+  empty: requiredElement('#empty', HTMLElement),
+  clearDone: requiredElement('#clear-done', HTMLButtonElement),
   toast: requiredElement('#toast', HTMLElement),
 }
 
+const filterButtons = Array.from(
+  document.querySelectorAll<HTMLButtonElement>('[data-filter]'),
+)
+
+let todos = loadTodos()
+let filter: TodoFilter = 'all'
 let pendingUpdate: AvailableUpdate | undefined
-let saveTimer = 0
 let toastTimer = 0
 
 function showToast(text: string) {
@@ -56,28 +69,79 @@ function hideUpdateBar() {
   pendingUpdate = undefined
 }
 
-function setTally(value: number) {
-  const next = Math.max(0, value)
-  ui.tally.textContent = String(next)
-  localStorage.setItem(TALLY_KEY, String(next))
+function persist() {
+  saveTodos(todos)
+  render()
 }
 
-function currentTally(): number {
-  const stored = Number(localStorage.getItem(TALLY_KEY) ?? '0')
-  return Number.isFinite(stored) ? stored : 0
+function summaryText(): string {
+  if (todos.length === 0) {
+    return 'Chưa có việc nào. Thêm việc đầu tiên ở bên dưới.'
+  }
+  const open = openCount(todos)
+  if (open === 0) {
+    return `Xong hết ${todos.length} việc.`
+  }
+  return `${open} việc chưa xong · ${todos.length} việc tổng.`
 }
 
-function loadNote() {
-  const stored = localStorage.getItem(NOTE_KEY) ?? ''
-  ui.note.value = stored
-  ui.noteMeta.textContent = stored ? 'Đã lưu trên máy' : 'Chưa lưu'
+function emptyText(): string {
+  if (filter === 'open') {
+    return 'Không còn việc đang làm.'
+  }
+  if (filter === 'done') {
+    return 'Chưa có việc đã xong.'
+  }
+  return 'Chưa có việc trong mục này.'
 }
 
-function persistNote() {
-  localStorage.setItem(NOTE_KEY, ui.note.value)
-  ui.noteMeta.textContent = ui.note.value.trim()
-    ? `Đã lưu · ${ui.note.value.length}/500`
-    : 'Chưa lưu'
+function render() {
+  const visible = visibleTodos(todos, filter)
+  ui.summary.textContent = summaryText()
+  ui.empty.hidden = visible.length > 0
+  ui.empty.textContent = emptyText()
+  ui.clearDone.hidden = !todos.some((todo) => todo.done)
+  ui.list.replaceChildren()
+
+  for (const todo of visible) {
+    ui.list.append(renderItem(todo))
+  }
+
+  for (const button of filterButtons) {
+    button.classList.toggle('is-on', button.dataset.filter === filter)
+  }
+}
+
+function renderItem(todo: Todo): HTMLLIElement {
+  const item = document.createElement('li')
+  item.className = todo.done ? 'todo-item is-done' : 'todo-item'
+
+  const checkbox = document.createElement('input')
+  checkbox.type = 'checkbox'
+  checkbox.checked = todo.done
+  checkbox.addEventListener('change', () => {
+    todos = toggleTodo(todos, todo.id)
+    persist()
+  })
+
+  const label = document.createElement('label')
+  const labelId = `todo-${todo.id}`
+  checkbox.id = labelId
+  label.htmlFor = labelId
+  label.textContent = todo.title
+
+  const remove = document.createElement('button')
+  remove.className = 'icon-btn'
+  remove.type = 'button'
+  remove.setAttribute('aria-label', 'Xóa việc')
+  remove.textContent = 'Xóa'
+  remove.addEventListener('click', () => {
+    todos = removeTodo(todos, todo.id)
+    persist()
+  })
+
+  item.append(checkbox, label, remove)
+  return item
 }
 
 async function refreshBuildLabel() {
@@ -111,21 +175,31 @@ async function runCheck(showIdleToast: boolean) {
   }
 }
 
-ui.note.addEventListener('input', () => {
-  window.clearTimeout(saveTimer)
-  saveTimer = window.setTimeout(persistNote, 200)
+ui.form.addEventListener('submit', (event) => {
+  event.preventDefault()
+  const todo = createTodo(ui.input.value)
+  if (!todo) {
+    return
+  }
+  todos = [todo, ...todos]
+  ui.input.value = ''
+  persist()
+  ui.input.focus()
 })
 
-ui.tallyUp.addEventListener('click', () => {
-  setTally(currentTally() + 1)
-})
+for (const button of filterButtons) {
+  button.addEventListener('click', () => {
+    const next = button.dataset.filter
+    if (next === 'all' || next === 'open' || next === 'done') {
+      filter = next
+      render()
+    }
+  })
+}
 
-ui.tallyDown.addEventListener('click', () => {
-  setTally(currentTally() - 1)
-})
-
-ui.tallyReset.addEventListener('click', () => {
-  setTally(0)
+ui.clearDone.addEventListener('click', () => {
+  todos = clearDone(todos)
+  persist()
 })
 
 ui.download.addEventListener('click', () => {
@@ -149,8 +223,7 @@ ui.checkUpdate.addEventListener('click', () => {
   void runCheck(true)
 })
 
-loadNote()
-setTally(currentTally())
+render()
 
 if (Capacitor.isNativePlatform()) {
   void markAppReady()

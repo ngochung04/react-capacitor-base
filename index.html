@@ -3,11 +3,11 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#e8f0ec" />
-    <title>Starter App</title>
+    <meta name="theme-color" content="#6f9e90" />
+    <title>Việc cần làm</title>
   </head>
   <body>
-    <div id="update-bar" class="update-bar" hidden>
+    <div id="update-bar" class="update-bar glass" hidden>
       <p id="update-text">Có bản cập nhật mới.</p>
       <div class="update-actions">
         <button id="download" class="btn btn-primary" type="button">Tải về</button>
@@ -15,11 +15,11 @@
       </div>
     </div>
 
-    <header class="top">
+    <header class="top glass">
       <div class="brand">
-        <span class="mark" aria-hidden="true">S</span>
+        <span class="mark" aria-hidden="true">V</span>
         <div>
-          <p class="brand-name">Starter App</p>
+          <p class="brand-name">Việc cần làm</p>
           <p id="build" class="build">Bản: …</p>
         </div>
       </div>
@@ -28,40 +28,33 @@
 
     <main>
       <section class="intro" aria-labelledby="intro-title">
-        <p class="eyebrow">Ứng dụng nhỏ, đủ để bắt đầu</p>
-        <h1 id="intro-title">Một túi dụng cụ trong túi.</h1>
-        <p class="lede">
-          Trang giới thiệu app với hai việc nhỏ: ghi chú cục bộ và đếm nhanh.
-          Bản web mới tới bằng OTA, không cần cài lại APK.
-        </p>
+        <p class="eyebrow">Danh sách việc</p>
+        <h1 id="intro-title">Hôm nay làm gì?</h1>
+        <p id="summary" class="lede">Chưa có việc nào.</p>
       </section>
 
-      <section class="tools" aria-labelledby="tools-title">
-        <div class="tools-head">
-          <h2 id="tools-title">Thử ngay</h2>
-          <p>Lưu trên máy, không cần tài khoản.</p>
+      <section class="board glass">
+        <form id="todo-form" class="composer" autocomplete="off">
+          <label class="sr-only" for="todo-input">Việc mới</label>
+          <input id="todo-input" name="title" maxlength="120" placeholder="Thêm việc…" required />
+          <button class="btn btn-primary" type="submit">Thêm</button>
+        </form>
+
+        <div class="toolbar">
+          <div class="filters" role="tablist" aria-label="Lọc việc">
+            <button id="filter-all" class="chip is-on" type="button" data-filter="all">Tất cả</button>
+            <button id="filter-open" class="chip" type="button" data-filter="open">Đang làm</button>
+            <button id="filter-done" class="chip" type="button" data-filter="done">Xong</button>
+          </div>
+          <button id="clear-done" class="text-btn" type="button">Xóa việc đã xong</button>
         </div>
 
-        <article class="panel note-panel">
-          <h3>Ghi chú nhanh</h3>
-          <label class="sr-only" for="note">Nội dung ghi chú</label>
-          <textarea id="note" rows="5" maxlength="500" placeholder="Viết một dòng để nhớ"></textarea>
-          <p id="note-meta" class="meta">Chưa lưu</p>
-        </article>
-
-        <article class="panel tally-panel">
-          <h3>Đếm nhanh</h3>
-          <p id="tally" class="tally" aria-live="polite">0</p>
-          <div class="tally-actions">
-            <button id="tally-down" class="btn" type="button">−</button>
-            <button id="tally-up" class="btn btn-primary" type="button">+</button>
-            <button id="tally-reset" class="text-btn" type="button">Đặt lại</button>
-          </div>
-        </article>
+        <ul id="todo-list" class="todo-list"></ul>
+        <p id="empty" class="empty">Chưa có việc trong mục này.</p>
       </section>
     </main>
 
-    <p id="toast" class="toast" hidden role="status"></p>
+    <p id="toast" class="toast glass" hidden role="status"></p>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>
