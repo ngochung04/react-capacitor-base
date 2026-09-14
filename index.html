@@ -7,7 +7,20 @@
     <title>Starter App</title>
   </head>
   <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
+    <main class="shell">
+      <span class="mark" aria-hidden="true">S</span>
+      <h1>Starter App</h1>
+      <p id="status" class="status" aria-live="polite">Checking for updates…</p>
+      <div class="actions">
+        <button id="download" class="btn btn-primary" type="button" hidden>
+          Download
+        </button>
+        <button id="later" class="btn" type="button" hidden>Later</button>
+        <button id="retry" class="btn btn-primary" type="button" hidden>
+          Retry
+        </button>
+      </div>
+    </main>
+    <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

@@ -3,6 +3,12 @@ name: Android
 on:
   push:
     branches: [main]
+    paths:
+      - 'android/**'
+      - 'capacitor.config.ts'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/android.yml'
   workflow_dispatch:
 
 permissions:
@@ -15,6 +21,8 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      OTA_GITHUB_REPO: ${{ github.repository }}
 
     steps:
       - name: Check out source

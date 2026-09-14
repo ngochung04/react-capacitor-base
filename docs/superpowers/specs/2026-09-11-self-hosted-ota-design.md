@@ -129,6 +129,20 @@ On native app open (shell or after reload into OTA bundle):
 - Product FE build/publish pipeline that produces the OTA zip + checksum.
 - Semver scheme for OTA versions.
 
+## Owner server notes
+
+Set GitHub secret `OTA_UPDATE_URL` and/or a local `.env` with:
+
+```
+OTA_UPDATE_URL=https://your-server.com/api/updates
+```
+
+Endpoint: HTTPS POST (Capgo plugin body). When a product bundle is ready, return `version`, `url` (HTTPS zip), `checksum` (SHA-256 of the zip). When none, return `message` and empty `url`.
+
+Zip layout: contents of the product Vite `dist/` with `index.html` at the **zip root** (not nested in a folder). Product FE must call `CapacitorUpdater.notifyAppReady()` on launch or Capgo rolls back to this shell.
+
+Helper in this repo: `npm run ota:zip` zips the **shell** `dist/` for format testing only — ship the real product zip from the product build.
+
 ## Implementation next step
 
-Write an implementation plan, then: slim `src/` to shell UI, install updater, wire check/dialog/download/reload, configure `updateUrl`, adjust CI for shell APK.
+Done: slim shell UI, updater plugin, check/dialog/download/reload, `OTA_UPDATE_URL`, CI debug APK.
