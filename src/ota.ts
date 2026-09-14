@@ -109,12 +109,32 @@ export async function checkForUpdate(): Promise<UpdateCheck> {
       CapacitorUpdater.current(),
     ])
     return interpretGithubRelease(release, current.bundle.version)
-  } catch {
+  } catch (error) {
+    if (error instanceof Error && error.message === 'No GitHub release found') {
+      return {
+        status: 'error',
+        message: 'No GitHub release found yet',
+      }
+    }
     return {
       status: 'error',
       message: 'Could not check for updates',
     }
   }
+}
+
+export async function currentBundleLabel(): Promise<string> {
+  if (!Capacitor.isNativePlatform()) {
+    return 'web'
+  }
+
+  const current = await CapacitorUpdater.current()
+  const version = current.bundle.version?.trim()
+  if (!version || current.bundle.id === 'builtin') {
+    return 'builtin'
+  }
+
+  return version
 }
 
 export async function installUpdate(update: AvailableUpdate): Promise<void> {

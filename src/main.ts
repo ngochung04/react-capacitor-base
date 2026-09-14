@@ -2,6 +2,7 @@ import { Capacitor } from '@capacitor/core'
 import './index.css'
 import {
   checkForUpdate,
+  currentBundleLabel,
   installUpdate,
   markAppReady,
 } from './ota.ts'
@@ -20,6 +21,7 @@ function requiredElement<T extends HTMLElement>(
 
 const ui = {
   status: requiredElement('#status', HTMLElement),
+  build: requiredElement('#build', HTMLElement),
   download: requiredElement('#download', HTMLButtonElement),
   later: requiredElement('#later', HTMLButtonElement),
   retry: requiredElement('#retry', HTMLButtonElement),
@@ -41,10 +43,15 @@ function showButtons(which: {
   ui.retry.hidden = !which.retry
 }
 
+async function refreshBuildLabel() {
+  ui.build.textContent = `Bundle: ${await currentBundleLabel()}`
+}
+
 async function runCheck() {
   setStatus('Checking for updates…')
   showButtons({})
   pendingUpdate = undefined
+  await refreshBuildLabel()
 
   const result = await checkForUpdate()
   if (result.status === 'available') {
@@ -58,7 +65,7 @@ async function runCheck() {
     showButtons({ retry: true })
     return
   }
-  setStatus('Waiting for the app bundle.')
+  setStatus('This device is up to date.')
   showButtons({ retry: true })
 }
 
@@ -89,6 +96,7 @@ if (Capacitor.isNativePlatform()) {
   void markAppReady()
   void runCheck()
 } else {
-  setStatus('This shell loads the product on a device after an OTA update.')
+  setStatus('Open the Android app to check GitHub Releases for OTA updates.')
+  ui.build.textContent = 'Bundle: web'
   showButtons({})
 }
