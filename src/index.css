@@ -82,6 +82,10 @@
   --chip-min-width: clamp(5.4rem, 4.6rem + 2.2vw, 7.2rem);
   --table-col-prize-width: clamp(5.6rem, 4.8rem + 2.6vw, 7.2rem);
 
+  /* Lottery Board Numbers: Các giải thường đồng đều, Highlight (G8 & ĐB) to hơn 10% */
+  --num-size-base: clamp(1.36rem, 1.18rem + 1.1vw, 1.95rem);
+  --num-size-highlight: calc(var(--num-size-base) * 1.10);
+
   font-family: var(--font-sans);
   color: var(--text);
   background: var(--bg);
@@ -580,7 +584,10 @@ input {
 }
 
 /* ==========================================================================
-   Typography Chữ số - Chuẩn sắc nét, to rõ, dễ dò từng hàng
+   Typography Chữ số - Chuẩn sắc nét, to rõ, các giải đều nhau
+   - Các giải thông thường: to đồng đều nhau
+   - Giải Đặc Biệt: to hơn các giải khác 10%
+   - Giải Tám: highlight và to bằng Giải Đặc Biệt
    ========================================================================== */
 .num {
   display: block;
@@ -588,16 +595,16 @@ input {
   text-align: center;
   white-space: nowrap;
   font-family: var(--font-mono);
-  font-size: clamp(1.18rem, 1.02rem + 1.0vw, 1.65rem);
-  font-weight: 800;
-  line-height: 1.4;
-  letter-spacing: 0.05em;
+  font-size: var(--num-size-base);
+  font-weight: 850;
+  line-height: 1.38;
+  letter-spacing: 0.04em;
   font-variant-numeric: tabular-nums;
   color: #141414;
-  padding: 1px 4px;
+  padding: 2px 4px;
 }
 
-/* Giải tám (Mở đầu - Sắc xanh navy hoặc đỏ son nổi bật) */
+/* Giải tám (Highlight nổi bật, cỡ số to bằng Giải Đặc Biệt = 110% giải thường) */
 .kq tbody tr.is-top td {
   background: #f0f7ff;
 }
@@ -609,12 +616,14 @@ input {
 }
 
 .kq tbody tr.is-top .num {
-  font-size: clamp(1.35rem, 1.15rem + 1.3vw, 1.95rem);
-  font-weight: 900;
+  font-size: var(--num-size-highlight);
+  font-weight: 950;
   color: #0958d9;
+  letter-spacing: 0.06em;
+  text-shadow: 0 1px 1px rgba(9, 88, 217, 0.15);
 }
 
-/* Giải Đặc Biệt (Tâm điểm tờ vé số - Đỏ rực rỡ, chữ số lớn nhất) */
+/* Giải Đặc Biệt (Highlight đỏ rực rỡ, to hơn giải thường 10%, bằng Giải Tám) */
 .kq tbody tr.is-special td {
   background: #fff1f0;
 }
@@ -626,10 +635,10 @@ input {
 }
 
 .kq tbody tr.is-special .num {
-  font-size: clamp(1.60rem, 1.30rem + 1.8vw, 2.50rem);
+  font-size: var(--num-size-highlight);
   font-weight: 950;
   color: #cf1322;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
   text-shadow: 0 1px 1px rgba(207, 19, 34, 0.15);
 }
 
