@@ -3,44 +3,36 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#f3d7b8" />
+    <meta name="theme-color" content="#ffffff" />
     <title>Kết quả xổ số Miền Nam</title>
   </head>
   <body>
-    <div id="update-bar" class="update-bar glass" hidden>
+    <div id="update-bar" hidden>
       <p id="update-text">Có bản cập nhật mới.</p>
-      <div class="update-actions">
-        <button id="download" class="btn btn-primary" type="button">Tải về</button>
-        <button id="later" class="btn" type="button">Để sau</button>
-      </div>
+      <button id="download" type="button">Dùng ngay</button>
+      <button id="later" type="button">Để sau</button>
     </div>
 
-    <header class="top glass">
-      <div class="brand">
-        <span class="mark" aria-hidden="true">XS</span>
-        <div>
-          <p class="brand-name">Xổ số Miền Nam</p>
-          <p id="build" class="build">Bản: …</p>
-        </div>
-      </div>
-      <div class="top-actions">
-        <button id="refresh" class="text-btn" type="button">Tải lại</button>
-        <button id="check-update" class="text-btn" type="button">Cập nhật</button>
-      </div>
+    <header>
+      <h1>XS Miền Nam</h1>
+      <p id="build">Bản: …</p>
+      <button id="check-update" type="button">Cập nhật</button>
     </header>
 
-    <main>
-      <nav id="day-tabs" class="day-tabs" aria-label="Chọn ngày"></nav>
+    <nav id="day-tabs" aria-label="Chọn ngày"></nav>
 
-      <p id="error" class="error" role="alert" hidden></p>
+    <form id="pick-date">
+      <label for="date-input">Chọn ngày</label>
+      <input id="date-input" type="date" />
+      <button type="submit">Xem</button>
+    </form>
 
-      <div class="board glass">
-        <p id="day-label" class="day-label">Đang tải…</p>
-        <div id="board" class="table-wrap"></div>
-      </div>
-    </main>
+    <p id="error" role="alert" hidden></p>
 
-    <p id="toast" class="toast glass" hidden role="status"></p>
+    <p id="day-label"></p>
+    <div id="board"></div>
+
+    <p id="toast" hidden role="status"></p>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

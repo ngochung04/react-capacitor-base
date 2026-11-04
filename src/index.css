@@ -1,22 +1,18 @@
 :root {
   --ink: #1c150d;
   --muted: #5f5343;
-  --line: rgba(255, 255, 255, 0.62);
-  --glass: rgba(255, 255, 255, 0.6);
-  --glass-strong: rgba(255, 255, 255, 0.8);
+  --line: #cfc4b3;
   --accent: #a63f16;
-  --seed: #b45309;
-  --blur: 22px;
-  --row: rgba(255, 255, 255, 0.62);
-  --stripe: rgba(255, 246, 234, 0.92);
-  --cell-line: rgba(44, 36, 25, 0.14);
-  font-family:
-    "Avenir Next", "Segoe UI", ui-sans-serif, system-ui, sans-serif;
+  --seed: #92400e;
+  --row: #ffffff;
+  --stripe: #f7f1e6;
+  --head: #ece2d0;
+  --cell-line: #c4b8a4;
+  font-family: "Segoe UI", ui-sans-serif, system-ui, sans-serif;
   color: var(--ink);
-  background: #f6efe4;
+  background: #fff;
   font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
+  -webkit-text-size-adjust: 100%;
 }
 
 * {
@@ -31,237 +27,200 @@ body {
   min-width: 320px;
   min-height: 100svh;
   margin: 0;
-  isolation: isolate;
-  background:
-    radial-gradient(circle at 12% 16%, rgba(255, 214, 176, 0.95), transparent 26rem),
-    radial-gradient(circle at 90% 6%, rgba(186, 224, 255, 0.85), transparent 24rem),
-    radial-gradient(circle at 72% 82%, rgba(255, 186, 140, 0.42), transparent 22rem),
-    radial-gradient(circle at 18% 90%, rgba(255, 249, 236, 0.95), transparent 16rem),
-    linear-gradient(160deg, #fff8ee 0%, #f3d7b8 48%, #d9eaf8 100%);
 }
 
-body::before,
-body::after {
-  content: "";
-  position: fixed;
-  z-index: -1;
-  border-radius: 50%;
-  filter: blur(8px);
-  pointer-events: none;
-}
-
-body::before {
-  top: 12%;
-  left: -4rem;
-  width: 18rem;
-  height: 18rem;
-  background: rgba(255, 255, 255, 0.55);
-}
-
-body::after {
-  right: -3rem;
-  bottom: 8%;
-  width: 16rem;
-  height: 16rem;
-  background: rgba(186, 224, 255, 0.45);
-}
-
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  border: 0;
-}
-
-.glass {
-  border: 1px solid var(--line);
-  background: var(--glass);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.7),
-    0 12px 40px rgba(44, 36, 25, 0.08);
-  backdrop-filter: blur(var(--blur)) saturate(1.45);
-  -webkit-backdrop-filter: blur(var(--blur)) saturate(1.45);
-}
-
-.update-bar {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.75rem;
-  margin: max(0.75rem, env(safe-area-inset-top)) auto 0;
-  padding: 0.85rem 1rem;
-  border-radius: 1.25rem;
-}
-
-.update-bar p {
-  margin: 0;
-  flex: 1 1 12rem;
-  font-size: 0.92rem;
-}
-
-.update-actions {
-  display: flex;
-  gap: 0.5rem;
-}
-
-.update-bar,
-.top,
-main,
-.toast {
-  width: min(760px, calc(100% - 1.5rem));
+#update-bar,
+header,
+#day-tabs,
+#pick-date,
+#error,
+#day-label,
+#board,
+#toast {
+  width: min(1280px, calc(100% - 1rem));
   margin-inline: auto;
 }
 
-.top {
+#update-bar {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  justify-content: space-between;
-  gap: 0.75rem;
-  margin-top: 0.75rem;
-  padding: 0.6rem 0.8rem;
-  border-radius: 1.25rem;
+  gap: 0.5rem;
+  padding: 0.6rem 0.7rem;
+  border-bottom: 2px solid var(--line);
+  background: #fff6e8;
 }
 
-.brand {
-  display: flex;
-  align-items: center;
-  gap: 0.65rem;
-  min-width: 0;
-}
-
-.mark {
-  display: grid;
-  width: 2.3rem;
-  height: 2.3rem;
-  flex: none;
-  place-items: center;
-  border: 1px solid var(--line);
-  border-radius: 0.8rem;
-  color: #fff8f1;
-  background: rgba(196, 94, 50, 0.92);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.28);
-  font-size: 0.9rem;
-  font-weight: 750;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-}
-
-.brand-name,
-.build {
+#update-bar p {
+  flex: 1 1 12rem;
   margin: 0;
+  font-size: 1.5rem;
 }
 
-.brand-name {
-  font-size: 0.95rem;
-  font-weight: 750;
-}
-
-.build {
-  color: var(--muted);
-  font-size: 0.68rem;
-  font-weight: 650;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-}
-
-.top-actions {
+header {
   display: flex;
+  flex-wrap: wrap;
+  align-items: center;
   gap: 0.75rem;
-  flex: none;
+  padding: 0.5rem 0.6rem;
+  border-bottom: 2px solid var(--line);
+}
+
+header h1 {
+  margin: 0;
+  font-size: 2.4rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+#build {
+  margin: 0;
+  color: var(--muted);
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+header #check-update {
+  margin-left: auto;
+}
+
+button,
+input {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  padding: 0.6rem 1.1rem;
+  border: 2px solid var(--line);
+  border-radius: 0;
+  background: #fff;
+  font-size: 1.5rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+button:hover {
+  background: var(--stripe);
+}
+
+button:focus-visible,
+input:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
 }
 
 /* date strip */
-.day-tabs {
+#day-tabs {
   display: flex;
   gap: 0.35rem;
-  margin: 0.6rem 0 0.5rem;
-  padding-bottom: 0.15rem;
+  padding: 0.5rem 0;
   overflow-x: auto;
-  scrollbar-width: none;
-}
-
-.day-tabs::-webkit-scrollbar {
-  display: none;
+  scrollbar-width: thin;
 }
 
 .chip {
   flex: none;
-  padding: 0.35rem 0.65rem;
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.3);
-  color: var(--muted);
-  font: inherit;
-  font-size: 0.78rem;
-  font-weight: 700;
+  padding: 0.55rem 0.9rem;
+  border: 2px solid var(--line);
+  border-radius: 0;
+  background: #fff;
+  color: var(--ink);
+  font-size: 1.6rem;
   font-variant-numeric: tabular-nums;
-  cursor: pointer;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  font-weight: 700;
 }
 
 .chip.is-on {
-  border-color: rgba(196, 94, 50, 0.4);
-  background: rgba(196, 94, 50, 0.94);
-  color: #fff8f1;
+  border-color: var(--accent);
+  background: var(--accent);
+  color: #fff;
 }
 
-.board {
-  margin: 0 0 max(1.5rem, env(safe-area-inset-bottom));
-  padding: 0.65rem 0.65rem 0.5rem;
-  border-radius: 1.25rem;
+/* any date, including older ones the strip does not show */
+#pick-date {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0 0 0.6rem;
 }
 
-.day-label {
-  margin: 0.1rem 0 0.55rem;
-  padding-inline: 0.2rem;
-  color: var(--muted);
-  font-size: 0.78rem;
-  font-weight: 750;
-  letter-spacing: 0.04em;
+#pick-date label {
+  font-size: 1.55rem;
+  font-weight: 700;
+}
+
+#pick-date input {
+  flex: 0 1 12rem;
+  padding: 0.55rem 0.6rem;
+  border: 2px solid var(--line);
+  border-radius: 0;
+  background: #fff;
+  font-size: 1.6rem;
+  font-variant-numeric: tabular-nums;
+}
+
+#error {
+  margin: 0 0 0.6rem;
+  padding: 0.6rem 0.7rem;
+  border: 2px solid var(--accent);
+  background: #fff2ec;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+#day-label {
+  margin: 0;
+  padding: 0.1rem 0 0.35rem 0.1rem;
+  font-size: 1.6rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
   text-transform: uppercase;
 }
 
-/* the results table, laid out like minhngoc: prizes down, provinces across */
-.table-wrap {
+/* the results table, laid out like minhngoc: prizes down, provinces across.
+   Sized in cqi (container query inline size) so the digits scale with the table
+   instead of overflowing into the next province when the screen narrows. */
+#board {
+  container-type: inline-size;
+  padding-bottom: max(1rem, env(safe-area-inset-bottom));
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
 }
 
-/* 9 prize rows must fit a 1333x800 tablet screen without scrolling the page away */
 .kq {
   width: 100%;
-  border-collapse: separate;
-  border-spacing: 0;
+  /* below ~26rem the province columns cannot hold a 5-digit number: scroll instead of clip */
+  min-width: 26rem;
+  border-collapse: collapse;
   table-layout: fixed;
 }
 
 .kq th,
 .kq td {
-  padding: 0.5rem 0.35rem;
+  padding: min(0.5cqi, 0.35svh) 0.8cqi;
+  border: 2px solid var(--cell-line);
   text-align: center;
   vertical-align: middle;
 }
 
 .kq thead th {
-  padding: 0.35rem 0.35rem 0.6rem;
-  font-size: 0.95rem;
+  background: var(--head);
+  padding: 0.5cqi 0.8cqi 0.9cqi;
   line-height: 1.15;
 }
 
-.kq thead .corner {
-  width: 4.6rem;
+/* the prize-name column; provinces share what is left */
+.kq thead .corner,
+.kq tbody th {
+  width: 17%;
 }
 
 .p-name {
   display: block;
   color: var(--accent);
-  font-size: 1.05rem;
+  font-size: clamp(1.2rem, 3cqi, 2.9rem);
   font-weight: 850;
   letter-spacing: 0.01em;
 }
@@ -270,350 +229,101 @@ main,
   display: block;
   margin-top: 0.15rem;
   color: var(--muted);
-  font-size: 0.68rem;
+  font-size: clamp(0.75rem, 1.4cqi, 1.2rem);
   font-weight: 700;
   letter-spacing: 0.03em;
 }
 
 .kq tbody th {
-  width: 4.6rem;
-  color: var(--muted);
-  font-size: 0.78rem;
+  background: var(--head);
+  color: var(--ink);
+  font-size: clamp(1.1rem, 2.4cqi, 2.4rem);
   font-weight: 800;
   text-align: left;
   white-space: nowrap;
-}
-
-/* strong zebra + a rule under each row keeps every number anchored to its prize */
-.kq tbody td {
-  border-top: 2px solid var(--cell-line);
-  border-bottom: 2px solid transparent;
-  background: var(--row);
-  font-variant-numeric: tabular-nums;
-}
-
-.kq tbody th {
-  border-top: 2px solid var(--cell-line);
-  border-right: 2px solid var(--cell-line);
 }
 
 .kq tbody tr:nth-child(even) td {
   background: var(--stripe);
 }
 
-.kq tbody td + td {
-  border-left: 2px solid var(--cell-line);
-}
-
-.kq tbody tr:last-child td,
-.kq tbody tr:last-child th {
-  border-bottom: 2px solid var(--cell-line);
-}
-
-/* numbers are what people read, so they get the size: one number per line */
+/* numbers are what people read: one number per line.
+   8cqi keeps a 5-digit number inside its column; 5.4svh keeps 9 rows inside a
+   landscape tablet screen. Whichever is tighter wins, so nothing overflows. */
 .num {
   display: block;
-  padding: 0.06rem 0;
   font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
-  font-size: 1.35rem;
+  font-size: min(8cqi, 5.4svh, 6rem);
   font-weight: 700;
-  letter-spacing: 0.06em;
-  line-height: 1.25;
+  letter-spacing: 0.02em;
+  line-height: 1.1;
 }
 
-.kq tbody tr.is-special td {
-  background: rgba(196, 94, 50, 0.16);
+.kq tbody tr.is-top td {
+  background: #fdf0d5;
 }
 
-.kq tbody tr.is-special .num {
-  color: var(--accent);
-  font-size: 1.6rem;
+.kq tbody tr.is-top .num {
+  color: var(--seed);
   font-weight: 800;
 }
 
-.error {
-  margin: 0.4rem 0 0.6rem;
-  padding: 0.7rem 0.85rem;
-  border: 1px solid rgba(196, 94, 50, 0.35);
-  border-radius: 0.9rem;
-  background: rgba(196, 94, 50, 0.12);
-  color: var(--ink);
-  font-size: 0.85rem;
+.kq tbody tr.is-special td {
+  background: #fbe3d8;
 }
 
-.btn,
-.text-btn {
-  font: inherit;
-  cursor: pointer;
-}
-
-.btn {
-  min-width: 4.5rem;
-  padding: 0.6rem 0.9rem;
-  border: 1px solid var(--line);
-  border-radius: 0.95rem;
-  background: var(--glass-strong);
-  color: var(--ink);
-  font-size: 0.9rem;
-  font-weight: 650;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-}
-
-.btn:hover {
-  background: rgba(255, 255, 255, 0.72);
-}
-
-.btn-primary {
-  border-color: rgba(196, 94, 50, 0.28);
-  background: rgba(196, 94, 50, 0.94);
-  color: #fff8f1;
-}
-
-.btn-primary:hover {
-  background: #a94c28;
-}
-
-.text-btn {
-  padding: 0.3rem 0.1rem;
-  border: 0;
-  background: none;
+/* giải đặc biệt must never read smaller than the other prizes */
+.kq tbody tr.is-special .num {
   color: var(--accent);
-  font-size: 0.82rem;
-  font-weight: 700;
-  text-decoration: underline;
-  text-underline-offset: 0.2em;
+  font-size: min(8cqi, 5.4svh, 6rem);
+  font-weight: 850;
 }
 
-.btn:focus-visible,
-.text-btn:focus-visible,
-.chip:focus-visible {
-  outline: 3px solid rgba(255, 186, 140, 0.95);
-  outline-offset: 2px;
-}
-
-.toast {
+#toast {
   position: sticky;
-  bottom: max(1rem, env(safe-area-inset-bottom));
-  margin-bottom: 1rem;
-  padding: 0.75rem 1rem;
-  border-radius: 1.1rem;
-  color: var(--ink);
-  font-size: 0.85rem;
-}
-
-/* Tablet: Galaxy Tab A7 is 1333x800 CSS px landscape, 800x1333 portrait.
-   A draw has 3 provinces (4 on Saturdays) - one row of columns reads better than cards. */
-@media (min-width: 640px) {
-  .update-bar,
-  .top,
-  main,
-  .toast {
-    width: min(1080px, calc(100% - 2rem));
-  }
-
-  .board {
-    padding: 0.9rem 0.95rem 0.8rem;
-  }
-
-  .kq thead th {
-    font-size: 1.1rem;
-  }
-
-  .kq thead .corner,
-  .kq tbody th {
-    width: 5.8rem;
-  }
-
-  .kq tbody th {
-    font-size: 0.9rem;
-  }
-
-  .p-name {
-    font-size: 1.2rem;
-  }
-
-  .p-code {
-    font-size: 0.74rem;
-  }
-
-  .kq th,
-  .kq td {
-    padding: 0.55rem 0.4rem;
-  }
-
-  .num {
-    font-size: 1.75rem;
-    line-height: 1.3;
-  }
-
-  .kq tbody tr.is-special .num {
-    font-size: 2.1rem;
-  }
-}
-
-@media (min-width: 1000px) {
-  .update-bar,
-  .top,
-  main,
-  .toast {
-    width: min(1240px, calc(100% - 3rem));
-  }
-
-  .kq thead th {
-    font-size: 1.2rem;
-  }
-
-  .kq thead .corner,
-  .kq tbody th {
-    width: 6.5rem;
-  }
-
-  .kq tbody th {
-    font-size: 1rem;
-  }
-
-  .p-name {
-    font-size: 1.35rem;
-  }
-
-  .num {
-    font-size: 2rem;
-    line-height: 1.32;
-  }
-
-  .kq tbody tr.is-special .num {
-    font-size: 2.4rem;
-  }
-}
-
-/* short landscape (Tab A7 lying down): 18 number lines + chrome must fit 800px */
-@media (min-width: 1000px) and (max-height: 900px) {
-  .update-bar,
-  .top,
-  main,
-  .toast {
-    width: min(1240px, calc(100% - 1.5rem));
-  }
-
-  .top {
-    margin-top: 0.35rem;
-    padding: 0.35rem 0.7rem;
-  }
-
-  .mark {
-    width: 2rem;
-    height: 2rem;
-  }
-
-  .day-tabs {
-    margin: 0.35rem 0 0.25rem;
-  }
-
-  .chip {
-    padding: 0.22rem 0.55rem;
-    font-size: 0.72rem;
-  }
-
-  .board {
-    padding: 0.55rem 0.7rem 0.5rem;
-  }
-
-  .day-label {
-    margin: 0.05rem 0 0.2rem;
-    font-size: 0.7rem;
-  }
-
-  .kq thead th {
-    padding: 0.1rem 0.35rem 0.35rem;
-    font-size: 1rem;
-  }
-
-  .p-name {
-    font-size: 1.1rem;
-  }
-
-  .p-code {
-    margin-top: 0.05rem;
-    font-size: 0.66rem;
-  }
-
-  .kq th,
-  .kq td {
-    padding: 0.16rem 0.35rem;
-  }
-
-  .num {
-    padding: 0;
-    font-size: 1.45rem;
-    line-height: 1.16;
-  }
-
-  .kq tbody tr.is-special .num {
-    font-size: 1.75rem;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  * {
-    transition: none !important;
-  }
-}
-
-@media (prefers-reduced-transparency: reduce) {
-  .glass,
-  .chip,
-  .btn,
-  .mark {
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
-    background: #fff6ea;
-  }
-
-  .btn-primary,
-  .chip.is-on,
-  .mark {
-    background: #c45e32;
-    color: #fff8f1;
-  }
+  bottom: max(0.75rem, env(safe-area-inset-bottom));
+  margin-bottom: 0.75rem;
+  padding: 0.7rem 0.9rem;
+  border: 2px solid var(--ink);
+  background: #fff;
+  font-size: 1.5rem;
+  font-weight: 700;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --ink: #f4efe6;
-    --muted: #c4b8a8;
-    --line: rgba(255, 255, 255, 0.16);
-    --glass: rgba(36, 28, 22, 0.42);
-    --glass-strong: rgba(48, 36, 28, 0.58);
-    --accent: #f0a070;
+    --ink: #f6f1e8;
+    --muted: #c2b6a4;
+    --line: #4a4034;
+    --accent: #ff9a6b;
     --seed: #fbbf24;
-    --row: rgba(255, 255, 255, 0.06);
-    --stripe: rgba(255, 255, 255, 0.1);
+    --row: #1b1712;
+    --stripe: #262019;
+    --head: #322a20;
+    --cell-line: #4a4034;
   }
 
-  body {
-    background:
-      radial-gradient(circle at 14% 16%, rgba(240, 160, 112, 0.28), transparent 24rem),
-      radial-gradient(circle at 88% 10%, rgba(120, 176, 224, 0.22), transparent 22rem),
-      linear-gradient(160deg, #3a2c22 0%, #1c1612 55%, #2a2420 100%);
+  body,
+  button,
+  #pick-date input,
+  #toast,
+  #update-bar {
+    background: #14110d;
   }
 
-  .mark,
-  .btn-primary,
-  .chip.is-on {
-    color: #2c2419;
-    background: rgba(255, 214, 176, 0.92);
+  button:hover {
+    background: #262019;
   }
 
-  .btn-primary:hover {
-    background: #f0a070;
+  #error {
+    background: #3a1c12;
   }
 
-  .btn:hover {
-    background: rgba(255, 255, 255, 0.12);
+  .kq tbody tr.is-top td {
+    background: #3a2c14;
   }
 
   .kq tbody tr.is-special td {
-    background: rgba(240, 160, 112, 0.16);
+    background: #40211a;
   }
 }

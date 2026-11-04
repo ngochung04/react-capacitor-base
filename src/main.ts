@@ -5,9 +5,11 @@ import {
   currentBundleLabel,
   installUpdate,
   markAppReady,
+  queueUpdate,
+  reloadApp,
 } from './ota.ts'
 import type { AvailableUpdate } from './ota.ts'
-import { fetchDays } from './lottery.ts'
+import { fetchDay, fetchRecent } from './lottery.ts'
 import type { Day } from './lottery.ts'
 
 function requiredElement<T extends HTMLElement>(
@@ -28,15 +30,15 @@ const ui = {
   later: requiredElement('#later', HTMLButtonElement),
   checkUpdate: requiredElement('#check-update', HTMLButtonElement),
   build: requiredElement('#build', HTMLElement),
-  refresh: requiredElement('#refresh', HTMLButtonElement),
   tabs: requiredElement('#day-tabs', HTMLElement),
-  board: requiredElement('#board', HTMLElement),
+  pickDate: requiredElement('#pick-date', HTMLFormElement),
+  dateInput: requiredElement('#date-input', HTMLInputElement),
   dayLabel: requiredElement('#day-label', HTMLElement),
+  board: requiredElement('#board', HTMLElement),
   error: requiredElement('#error', HTMLElement),
   toast: requiredElement('#toast', HTMLElement),
 }
 
-// the draw always has these prizes; XSMN has no g8 label differences worth handling
 const ROW_LABELS: [key: string, label: string][] = [
   ['g8', 'Giải tám'],
   ['g7', 'Giải bảy'],
@@ -49,10 +51,11 @@ const ROW_LABELS: [key: string, label: string][] = [
   ['db', 'Giải ĐB'],
 ]
 
-let days: Day[] = []
-let selected = 0
+let recent: Day[] = []
+let current: Day | undefined
 let loading = false
 let pendingUpdate: AvailableUpdate | undefined
+let stagedUpdate: AvailableUpdate | undefined
 let toastTimer = 0
 
 function showToast(text: string) {
@@ -69,25 +72,47 @@ function hideUpdateBar() {
   pendingUpdate = undefined
 }
 
+// d/m/yyyy -> yyyy-mm-dd for <input type="date">
+function toIso(display: string): string | undefined {
+  const found = /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/.exec(display.trim())
+  if (!found) {
+    return undefined
+  }
+  const [, d, m, y] = found
+  return `${y}-${m.padStart(2, '0')}-${d.padStart(2, '0')}`
+}
+
+function todayIso(): string {
+  const now = new Date()
+  const offset = now.getTimezoneOffset() * 60 * 1000
+  return new Date(now.getTime() - offset).toISOString().slice(0, 10)
+}
+
 function renderTabs() {
   ui.tabs.replaceChildren()
-  days.forEach((day, index) => {
+  const active = current ? toIso(current.date) : undefined
+
+  for (const day of recent) {
+    const iso = toIso(day.date)
     const button = document.createElement('button')
     button.type = 'button'
-    button.className = index === selected ? 'chip is-on' : 'chip'
+    button.className = iso === active ? 'chip is-on' : 'chip'
     button.textContent = day.date
-    button.setAttribute('aria-selected', String(index === selected))
+    button.setAttribute('aria-selected', String(iso === active))
     button.addEventListener('click', () => {
-      selected = index
+      current = day
       renderTabs()
       renderBoard()
+      if (iso) {
+        ui.dateInput.value = iso
+      }
     })
     ui.tabs.append(button)
-  })
+  }
 }
 
 function renderBoard() {
-  const day = days[selected]
+  const day = current
   ui.board.replaceChildren()
   if (!day) {
     ui.dayLabel.textContent = ''
@@ -121,13 +146,14 @@ function renderBoard() {
 
   const tbody = document.createElement('tbody')
   for (const [key, label] of ROW_LABELS) {
-    // skip a prize nobody drew, instead of leaving a blank row
     if (!day.provinces.some((p) => p.prizes[key]?.length)) {
       continue
     }
     const tr = document.createElement('tr')
     if (key === 'db') {
       tr.className = 'is-special'
+    } else if (key === 'g8') {
+      tr.className = 'is-top'
     }
     const th = document.createElement('th')
     th.scope = 'row'
@@ -150,21 +176,39 @@ function renderBoard() {
   ui.board.append(table)
 }
 
-async function load(showSpinner: boolean) {
+async function showDay(iso: string) {
+  ui.error.hidden = true
+  ui.dayLabel.textContent = 'Đang tải…'
+  try {
+    const day = await fetchDay(iso)
+    current = day
+    ui.dateInput.value = iso
+    renderTabs()
+    renderBoard()
+  } catch (error) {
+    current = undefined
+    renderBoard()
+    ui.error.textContent =
+      error instanceof Error ? error.message : 'Không tải được kết quả'
+    ui.error.hidden = false
+  }
+}
+
+async function loadRecent() {
   if (loading) {
     return
   }
   loading = true
   ui.error.hidden = true
-  if (showSpinner) {
-    ui.refresh.disabled = true
-    ui.refresh.textContent = 'Đang tải…'
-  }
-
   try {
-    const next = await fetchDays()
-    days = next
-    selected = 0
+    recent = await fetchRecent()
+    current = recent[0]
+    if (current) {
+      const iso = toIso(current.date)
+      if (iso) {
+        ui.dateInput.value = iso
+      }
+    }
     renderTabs()
     renderBoard()
   } catch (error) {
@@ -173,8 +217,6 @@ async function load(showSpinner: boolean) {
     ui.error.hidden = false
   } finally {
     loading = false
-    ui.refresh.disabled = false
-    ui.refresh.textContent = 'Tải lại'
   }
 }
 
@@ -196,7 +238,7 @@ async function runCheck(showIdleToast: boolean) {
   const result = await checkForUpdate()
   if (result.status === 'available') {
     pendingUpdate = result.update
-    ui.updateText.textContent = `Có bản ${result.update.version}. Tải về để dùng ngay.`
+    ui.updateText.textContent = `Có bản ${result.update.version}.`
     ui.updateBar.hidden = false
     return
   }
@@ -209,13 +251,24 @@ async function runCheck(showIdleToast: boolean) {
   }
 }
 
-ui.refresh.addEventListener('click', () => {
-  void load(true)
+ui.pickDate.addEventListener('submit', (event) => {
+  event.preventDefault()
+  const iso = ui.dateInput.value
+  if (iso) {
+    void showDay(iso)
+  }
 })
+
+// past days are permanent in KV; today may not have drawn yet
+ui.dateInput.max = todayIso()
 
 ui.download.addEventListener('click', () => {
   const update = pendingUpdate
   if (!update) {
+    return
+  }
+  if (stagedUpdate === update) {
+    void reloadApp()
     return
   }
   ui.updateText.textContent = 'Đang tải về…'
@@ -234,11 +287,52 @@ ui.checkUpdate.addEventListener('click', () => {
   void runCheck(true)
 })
 
-void load(true)
+// silent auto-check: on launch, when the app comes back to the foreground, and hourly.
+// The bundle is only queued, so it swaps in on the next cold start instead of reloading
+// under the user's finger. The manual "Cập nhật" button still reports what it found.
+const AUTO_CHECK_MS = 60 * 60 * 1000
+let autoCheckTimer = 0
+
+async function autoCheck() {
+  if (!Capacitor.isNativePlatform() || loading) {
+    return
+  }
+  const result = await checkForUpdate()
+  if (result.status !== 'available' || pendingUpdate) {
+    return
+  }
+  try {
+    await queueUpdate(result.update)
+    pendingUpdate = result.update
+    stagedUpdate = result.update
+    ui.build.textContent = `Bản: ${result.update.version} (sẵn sàng)`
+    showToast('Đã tải bản mới, mở lại app để dùng')
+    ui.updateText.textContent = `Bản ${result.update.version} đã sẵn sàng.`
+    ui.updateBar.hidden = false
+  } catch {
+    // a failed background download must stay silent - the next check retries
+  }
+}
+
+function startAutoCheck() {
+  void autoCheck()
+  window.clearInterval(autoCheckTimer)
+  autoCheckTimer = window.setInterval(() => {
+    void autoCheck()
+  }, AUTO_CHECK_MS)
+}
+
+void loadRecent()
 
 if (Capacitor.isNativePlatform()) {
   void markAppReady()
-  void runCheck(false)
+  startAutoCheck()
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') {
+      void refreshBuildLabel()
+      void autoCheck()
+    }
+  })
 } else {
   void refreshBuildLabel()
 }

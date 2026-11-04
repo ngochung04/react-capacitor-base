@@ -10,7 +10,8 @@
     "preview": "vite preview",
     "cap:sync": "npm run build && npx cap sync android",
     "android:debug": "npm run cap:sync && cd android && ./gradlew assembleDebug",
-    "ota:zip": "npm run build && cd dist && zip -r ../ota-bundle.zip ."
+    "ota:zip": "npm run build && cd dist && zip -r ../ota-bundle.zip .",
+    "release": "node scripts/release.js"
   },
   "dependencies": {
     "@capacitor/android": "^8.5.1",

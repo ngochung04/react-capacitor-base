@@ -15,8 +15,11 @@ const API = (
   import.meta.env.VITE_LOTTERY_API ?? 'https://xsmn-api.zxccc.workers.dev'
 ).replace(/\/$/, '')
 
-export async function fetchDays(): Promise<Day[]> {
-  const res = await fetch(API, { cache: 'no-cache' })
+async function request(query: string): Promise<Day[]> {
+  const res = await fetch(`${API}${query}`, { cache: 'no-cache' })
+  if (res.status === 404) {
+    throw new Error('Không có kết quả cho ngày này')
+  }
   if (!res.ok) {
     throw new Error(`Máy chủ trả lỗi ${res.status}`)
   }
@@ -27,4 +30,14 @@ export async function fetchDays(): Promise<Day[]> {
   }
 
   return body.days
+}
+
+// one day, any date the server has ever stored (KV is permanent per day)
+export async function fetchDay(isoDate: string): Promise<Day> {
+  const days = await request(`/?date=${encodeURIComponent(isoDate)}`)
+  return days[0]
+}
+
+export async function fetchRecent(): Promise<Day[]> {
+  return request('')
 }

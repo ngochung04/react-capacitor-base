@@ -138,12 +138,28 @@ export async function currentBundleLabel(): Promise<string> {
 }
 
 export async function installUpdate(update: AvailableUpdate): Promise<void> {
+  await downloadAndQueue(update)
+  // immediate: the caller is a user tap, so an abrupt reload is expected
+  await CapacitorUpdater.reload()
+}
+
+// queue instead of set(): the bundle swaps in on next background/kill, so a silent
+// background check never yanks the screen out from under someone mid-lookup
+export async function queueUpdate(update: AvailableUpdate): Promise<void> {
+  await downloadAndQueue(update)
+}
+
+export async function reloadApp(): Promise<void> {
+  await CapacitorUpdater.reload()
+}
+
+async function downloadAndQueue(update: AvailableUpdate): Promise<void> {
   const bundle = await CapacitorUpdater.download({
     url: update.url,
     version: update.version,
     checksum: update.checksum,
   })
-  await CapacitorUpdater.set({ id: bundle.id })
+  await CapacitorUpdater.next({ id: bundle.id })
 }
 
 async function fetchLatestGithubRelease(repo: string): Promise<GithubRelease> {
