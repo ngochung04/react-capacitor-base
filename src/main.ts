@@ -67,17 +67,66 @@ function todayIso(): string {
   return new Date(now.getTime() - offset).toISOString().slice(0, 10)
 }
 
+function renderLoading() {
+  ui.board.replaceChildren()
+  const wrap = document.createElement('div')
+  wrap.className = 'board-loading'
+  const spinner = document.createElement('div')
+  spinner.className = 'spinner'
+  const text = document.createElement('span')
+  text.textContent = 'Đang tải kết quả…'
+  wrap.append(spinner, text)
+  ui.board.append(wrap)
+}
+
+const WD_MAP: Record<string, string> = {
+  hai: 'T2',
+  ba: 'T3',
+  tư: 'T4',
+  năm: 'T5',
+  sáu: 'T6',
+  bảy: 'T7',
+}
+
+function shortWeekday(raw: string): string {
+  const normalized = raw.toLowerCase().trim()
+  if (normalized.includes('chủ nhật')) {
+    return 'CN'
+  }
+  for (const [key, val] of Object.entries(WD_MAP)) {
+    if (normalized.includes(key)) {
+      return val
+    }
+  }
+  return raw
+}
+
 function renderTabs() {
   ui.tabs.replaceChildren()
   const active = current ? toIso(current.date) : undefined
+  const today = todayIso()
 
   for (const day of recent) {
     const iso = toIso(day.date)
+    const isToday = iso === today
     const button = document.createElement('button')
     button.type = 'button'
     button.className = iso === active ? 'chip is-on' : 'chip'
-    button.textContent = day.date
     button.setAttribute('aria-selected', String(iso === active))
+
+    const shortWd = shortWeekday(day.weekday)
+    const shortDate = iso ? `${iso.slice(8, 10)}/${iso.slice(5, 7)}` : day.date.slice(0, 5)
+
+    const sub = document.createElement('span')
+    sub.className = 'chip-sub'
+    sub.textContent = isToday ? 'Hôm nay' : shortWd
+
+    const main = document.createElement('span')
+    main.className = 'chip-main'
+    main.textContent = shortDate
+
+    button.append(sub, main)
+
     button.addEventListener('click', () => {
       current = day
       renderTabs()
@@ -108,6 +157,7 @@ function renderBoard() {
   const corner = document.createElement('th')
   corner.className = 'corner'
   corner.scope = 'col'
+  corner.textContent = 'Giải'
   headRow.append(corner)
   for (const province of day.provinces) {
     const th = document.createElement('th')
@@ -159,6 +209,7 @@ function renderBoard() {
 async function showDay(iso: string) {
   ui.error.hidden = true
   ui.dayLabel.textContent = 'Đang tải…'
+  renderLoading()
   try {
     current = await fetchDay(iso)
     ui.dateInput.value = iso
@@ -179,6 +230,7 @@ async function loadRecent() {
   }
   loading = true
   ui.error.hidden = true
+  renderLoading()
   try {
     recent = await fetchRecent()
     current = recent[0]
@@ -189,6 +241,8 @@ async function loadRecent() {
     renderTabs()
     renderBoard()
   } catch (error) {
+    current = undefined
+    renderBoard()
     ui.error.textContent =
       error instanceof Error ? error.message : 'Không tải được kết quả'
     ui.error.hidden = false

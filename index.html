@@ -2,23 +2,59 @@
 <html lang="vi">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#ffffff" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#131b26" media="(prefers-color-scheme: dark)" />
     <title>Kết quả xổ số Miền Nam</title>
   </head>
   <body>
-    <nav id="day-tabs" aria-label="Chọn ngày"></nav>
+    <header class="app-header">
+      <div class="header-inner">
+        <div class="brand">
+          <div class="brand-icon" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/>
+              <path d="M2 12h20"/>
+            </svg>
+          </div>
+          <div class="brand-meta">
+            <h1 class="brand-title">Xổ Số Miền Nam</h1>
+            <span class="brand-badge">Trực tiếp</span>
+          </div>
+        </div>
 
-    <form id="pick-date">
-      <label for="date-input">Chọn ngày</label>
-      <input id="date-input" type="date" />
-      <button type="submit">Xem</button>
-    </form>
+        <form id="pick-date" class="pick-date-form">
+          <label for="date-input" class="sr-only">Chọn ngày</label>
+          <input id="date-input" type="date" aria-label="Chọn ngày xem kết quả" />
+          <button type="submit" id="btn-submit">Xem</button>
+        </form>
+      </div>
+    </header>
 
-    <p id="error" role="alert" hidden></p>
+    <main class="app-main">
+      <nav id="day-tabs" aria-label="Chọn ngày gần đây"></nav>
 
-    <p id="day-label"></p>
-    <div id="board"></div>
+      <div class="status-row">
+        <div class="day-title-wrap">
+          <svg class="day-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect width="18" height="18" x="3" y="4" rx="2" ry="2"/>
+            <line x1="16" x2="16" y1="2" y2="6"/>
+            <line x1="8" x2="8" y1="2" y2="6"/>
+            <line x1="3" x2="21" y1="10" y2="10"/>
+          </svg>
+          <h2 id="day-label"></h2>
+        </div>
+        <div class="scroll-hint" aria-hidden="true">
+          <span>Vuốt ngang xem đài</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m9 18 6-6-6-6"/></svg>
+        </div>
+      </div>
+
+      <p id="error" role="alert" hidden></p>
+
+      <div id="board" class="board-container"></div>
+    </main>
 
     <p id="toast" hidden role="status"></p>
     <script type="module" src="/src/main.ts"></script>

@@ -4,6 +4,7 @@ const config: CapacitorConfig = {
   appId: 'com.example.starter',
   appName: 'Starter App',
   webDir: 'dist',
+  backgroundColor: '#f8fafc',
   plugins: {
     CapacitorUpdater: {
       autoUpdate: false,
