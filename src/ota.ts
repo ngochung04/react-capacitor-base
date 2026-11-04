@@ -123,43 +123,37 @@ export async function checkForUpdate(): Promise<UpdateCheck> {
   }
 }
 
-export async function currentBundleLabel(): Promise<string> {
+// Silent auto-update: check, download, apply. Never throws - the caller is a timer.
+//    immediate: on launch, `set` and reload straight away; the app boots on the new bundle.
+//    queued:    mid-session, `next` so it swaps in on the next background/cold start
+//               instead of yanking the screen away while someone is reading numbers.
+export async function syncUpdate(
+  immediate: boolean,
+): Promise<string | undefined> {
   if (!Capacitor.isNativePlatform()) {
-    return 'web'
+    return undefined
   }
 
-  const current = await CapacitorUpdater.current()
-  const version = current.bundle.version?.trim()
-  if (!version || current.bundle.id === 'builtin') {
-    return 'builtin'
+  try {
+    const result = await checkForUpdate()
+    if (result.status !== 'available') {
+      return undefined
+    }
+    const bundle = await CapacitorUpdater.download({
+      url: result.update.url,
+      version: result.update.version,
+      checksum: result.update.checksum,
+    })
+    if (immediate) {
+      // destroys the JS context and relaunches - nothing after this runs
+      await CapacitorUpdater.set({ id: bundle.id })
+    } else {
+      await CapacitorUpdater.next({ id: bundle.id })
+    }
+    return result.update.version
+  } catch {
+    return undefined
   }
-
-  return version
-}
-
-export async function installUpdate(update: AvailableUpdate): Promise<void> {
-  await downloadAndQueue(update)
-  // immediate: the caller is a user tap, so an abrupt reload is expected
-  await CapacitorUpdater.reload()
-}
-
-// queue instead of set(): the bundle swaps in on next background/kill, so a silent
-// background check never yanks the screen out from under someone mid-lookup
-export async function queueUpdate(update: AvailableUpdate): Promise<void> {
-  await downloadAndQueue(update)
-}
-
-export async function reloadApp(): Promise<void> {
-  await CapacitorUpdater.reload()
-}
-
-async function downloadAndQueue(update: AvailableUpdate): Promise<void> {
-  const bundle = await CapacitorUpdater.download({
-    url: update.url,
-    version: update.version,
-    checksum: update.checksum,
-  })
-  await CapacitorUpdater.next({ id: bundle.id })
 }
 
 async function fetchLatestGithubRelease(repo: string): Promise<GithubRelease> {

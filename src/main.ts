@@ -1,14 +1,6 @@
 import { Capacitor } from '@capacitor/core'
 import './index.css'
-import {
-  checkForUpdate,
-  currentBundleLabel,
-  installUpdate,
-  markAppReady,
-  queueUpdate,
-  reloadApp,
-} from './ota.ts'
-import type { AvailableUpdate } from './ota.ts'
+import { markAppReady, syncUpdate } from './ota.ts'
 import { fetchDay, fetchRecent } from './lottery.ts'
 import type { Day } from './lottery.ts'
 
@@ -24,12 +16,6 @@ function requiredElement<T extends HTMLElement>(
 }
 
 const ui = {
-  updateBar: requiredElement('#update-bar', HTMLElement),
-  updateText: requiredElement('#update-text', HTMLElement),
-  download: requiredElement('#download', HTMLButtonElement),
-  later: requiredElement('#later', HTMLButtonElement),
-  checkUpdate: requiredElement('#check-update', HTMLButtonElement),
-  build: requiredElement('#build', HTMLElement),
   tabs: requiredElement('#day-tabs', HTMLElement),
   pickDate: requiredElement('#pick-date', HTMLFormElement),
   dateInput: requiredElement('#date-input', HTMLInputElement),
@@ -54,8 +40,6 @@ const ROW_LABELS: [key: string, label: string][] = [
 let recent: Day[] = []
 let current: Day | undefined
 let loading = false
-let pendingUpdate: AvailableUpdate | undefined
-let stagedUpdate: AvailableUpdate | undefined
 let toastTimer = 0
 
 function showToast(text: string) {
@@ -65,11 +49,6 @@ function showToast(text: string) {
   toastTimer = window.setTimeout(() => {
     ui.toast.hidden = true
   }, 2200)
-}
-
-function hideUpdateBar() {
-  ui.updateBar.hidden = true
-  pendingUpdate = undefined
 }
 
 // d/m/yyyy -> yyyy-mm-dd for <input type="date">
@@ -176,12 +155,12 @@ function renderBoard() {
   ui.board.append(table)
 }
 
+// a picked date never enters the 7-day strip: that strip stays "the last 7 draws"
 async function showDay(iso: string) {
   ui.error.hidden = true
   ui.dayLabel.textContent = 'Đang tải…'
   try {
-    const day = await fetchDay(iso)
-    current = day
+    current = await fetchDay(iso)
     ui.dateInput.value = iso
     renderTabs()
     renderBoard()
@@ -203,11 +182,9 @@ async function loadRecent() {
   try {
     recent = await fetchRecent()
     current = recent[0]
-    if (current) {
-      const iso = toIso(current.date)
-      if (iso) {
-        ui.dateInput.value = iso
-      }
+    const iso = current ? toIso(current.date) : undefined
+    if (iso) {
+      ui.dateInput.value = iso
     }
     renderTabs()
     renderBoard()
@@ -217,37 +194,6 @@ async function loadRecent() {
     ui.error.hidden = false
   } finally {
     loading = false
-  }
-}
-
-async function refreshBuildLabel() {
-  ui.build.textContent = `Bản: ${await currentBundleLabel()}`
-}
-
-async function runCheck(showIdleToast: boolean) {
-  hideUpdateBar()
-  await refreshBuildLabel()
-
-  if (!Capacitor.isNativePlatform()) {
-    if (showIdleToast) {
-      showToast('OTA chỉ chạy trên app Android')
-    }
-    return
-  }
-
-  const result = await checkForUpdate()
-  if (result.status === 'available') {
-    pendingUpdate = result.update
-    ui.updateText.textContent = `Có bản ${result.update.version}.`
-    ui.updateBar.hidden = false
-    return
-  }
-  if (result.status === 'error') {
-    showToast(result.message)
-    return
-  }
-  if (showIdleToast) {
-    showToast('Bạn đang dùng bản mới nhất')
   }
 }
 
@@ -262,77 +208,38 @@ ui.pickDate.addEventListener('submit', (event) => {
 // past days are permanent in KV; today may not have drawn yet
 ui.dateInput.max = todayIso()
 
-ui.download.addEventListener('click', () => {
-  const update = pendingUpdate
-  if (!update) {
-    return
-  }
-  if (stagedUpdate === update) {
-    void reloadApp()
-    return
-  }
-  ui.updateText.textContent = 'Đang tải về…'
-  void installUpdate(update).catch(() => {
-    showToast('Không tải được bản cập nhật')
-    hideUpdateBar()
-  })
-})
-
-ui.later.addEventListener('click', () => {
-  hideUpdateBar()
-  showToast('Sẽ hỏi lại lần mở sau')
-})
-
-ui.checkUpdate.addEventListener('click', () => {
-  void runCheck(true)
-})
-
-// silent auto-check: on launch, when the app comes back to the foreground, and hourly.
-// The bundle is only queued, so it swaps in on the next cold start instead of reloading
-// under the user's finger. The manual "Cập nhật" button still reports what it found.
+// updates are silent: check on launch, on every foreground return, and hourly.
+// A newer bundle is downloaded and applied on the spot - no prompt, no button.
 const AUTO_CHECK_MS = 60 * 60 * 1000
 let autoCheckTimer = 0
 
-async function autoCheck() {
+async function autoUpdate() {
   if (!Capacitor.isNativePlatform() || loading) {
     return
   }
-  const result = await checkForUpdate()
-  if (result.status !== 'available' || pendingUpdate) {
-    return
-  }
-  try {
-    await queueUpdate(result.update)
-    pendingUpdate = result.update
-    stagedUpdate = result.update
-    ui.build.textContent = `Bản: ${result.update.version} (sẵn sàng)`
-    showToast('Đã tải bản mới, mở lại app để dùng')
-    ui.updateText.textContent = `Bản ${result.update.version} đã sẵn sàng.`
-    ui.updateBar.hidden = false
-  } catch {
-    // a failed background download must stay silent - the next check retries
+  const applied = await syncUpdate(false)
+  if (applied) {
+    showToast('Đã cập nhật bản mới')
   }
 }
 
-function startAutoCheck() {
-  void autoCheck()
+function startAutoUpdate() {
+  // notifyAppReady must resolve first: if the native side times out waiting for it,
+  // it rolls the current bundle back and a relaunch would re-download the same update
+  void markAppReady().then(() => syncUpdate(true))
   window.clearInterval(autoCheckTimer)
   autoCheckTimer = window.setInterval(() => {
-    void autoCheck()
+    void autoUpdate()
   }, AUTO_CHECK_MS)
 }
 
 void loadRecent()
 
 if (Capacitor.isNativePlatform()) {
-  void markAppReady()
-  startAutoCheck()
+  startAutoUpdate()
   document.addEventListener('visibilitychange', () => {
     if (document.visibilityState === 'visible') {
-      void refreshBuildLabel()
-      void autoCheck()
+      void autoUpdate()
     }
   })
-} else {
-  void refreshBuildLabel()
 }
