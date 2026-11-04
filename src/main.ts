@@ -7,17 +7,8 @@ import {
   markAppReady,
 } from './ota.ts'
 import type { AvailableUpdate } from './ota.ts'
-import {
-  clearDone,
-  createTodo,
-  loadTodos,
-  openCount,
-  removeTodo,
-  saveTodos,
-  toggleTodo,
-  visibleTodos,
-} from './todos.ts'
-import type { Todo, TodoFilter } from './todos.ts'
+import { fetchDays } from './lottery.ts'
+import type { Day } from './lottery.ts'
 
 function requiredElement<T extends HTMLElement>(
   selector: string,
@@ -37,21 +28,30 @@ const ui = {
   later: requiredElement('#later', HTMLButtonElement),
   checkUpdate: requiredElement('#check-update', HTMLButtonElement),
   build: requiredElement('#build', HTMLElement),
-  summary: requiredElement('#summary', HTMLElement),
-  form: requiredElement('#todo-form', HTMLFormElement),
-  input: requiredElement('#todo-input', HTMLInputElement),
-  list: requiredElement('#todo-list', HTMLElement),
-  empty: requiredElement('#empty', HTMLElement),
-  clearDone: requiredElement('#clear-done', HTMLButtonElement),
+  refresh: requiredElement('#refresh', HTMLButtonElement),
+  tabs: requiredElement('#day-tabs', HTMLElement),
+  board: requiredElement('#board', HTMLElement),
+  dayLabel: requiredElement('#day-label', HTMLElement),
+  error: requiredElement('#error', HTMLElement),
   toast: requiredElement('#toast', HTMLElement),
 }
 
-const filterButtons = Array.from(
-  document.querySelectorAll<HTMLButtonElement>('[data-filter]'),
-)
+// the draw always has these prizes; XSMN has no g8 label differences worth handling
+const ROW_LABELS: [key: string, label: string][] = [
+  ['g8', 'Giải tám'],
+  ['g7', 'Giải bảy'],
+  ['g6', 'Giải sáu'],
+  ['g5', 'Giải năm'],
+  ['g4', 'Giải tư'],
+  ['g3', 'Giải ba'],
+  ['g2', 'Giải nhì'],
+  ['g1', 'Giải nhất'],
+  ['db', 'Giải ĐB'],
+]
 
-let todos = loadTodos()
-let filter: TodoFilter = 'all'
+let days: Day[] = []
+let selected = 0
+let loading = false
 let pendingUpdate: AvailableUpdate | undefined
 let toastTimer = 0
 
@@ -69,79 +69,113 @@ function hideUpdateBar() {
   pendingUpdate = undefined
 }
 
-function persist() {
-  saveTodos(todos)
-  render()
-}
-
-function summaryText(): string {
-  if (todos.length === 0) {
-    return 'Chưa có việc nào. Thêm việc đầu tiên ở bên dưới.'
-  }
-  const open = openCount(todos)
-  if (open === 0) {
-    return `Xong hết ${todos.length} việc.`
-  }
-  return `${open} việc chưa xong · ${todos.length} việc tổng.`
-}
-
-function emptyText(): string {
-  if (filter === 'open') {
-    return 'Không còn việc đang làm.'
-  }
-  if (filter === 'done') {
-    return 'Chưa có việc đã xong.'
-  }
-  return 'Chưa có việc trong mục này.'
-}
-
-function render() {
-  const visible = visibleTodos(todos, filter)
-  ui.summary.textContent = summaryText()
-  ui.empty.hidden = visible.length > 0
-  ui.empty.textContent = emptyText()
-  ui.clearDone.hidden = !todos.some((todo) => todo.done)
-  ui.list.replaceChildren()
-
-  for (const todo of visible) {
-    ui.list.append(renderItem(todo))
-  }
-
-  for (const button of filterButtons) {
-    button.classList.toggle('is-on', button.dataset.filter === filter)
-  }
-}
-
-function renderItem(todo: Todo): HTMLLIElement {
-  const item = document.createElement('li')
-  item.className = todo.done ? 'todo-item is-done' : 'todo-item'
-
-  const checkbox = document.createElement('input')
-  checkbox.type = 'checkbox'
-  checkbox.checked = todo.done
-  checkbox.addEventListener('change', () => {
-    todos = toggleTodo(todos, todo.id)
-    persist()
+function renderTabs() {
+  ui.tabs.replaceChildren()
+  days.forEach((day, index) => {
+    const button = document.createElement('button')
+    button.type = 'button'
+    button.className = index === selected ? 'chip is-on' : 'chip'
+    button.textContent = day.date
+    button.setAttribute('aria-selected', String(index === selected))
+    button.addEventListener('click', () => {
+      selected = index
+      renderTabs()
+      renderBoard()
+    })
+    ui.tabs.append(button)
   })
+}
 
-  const label = document.createElement('label')
-  const labelId = `todo-${todo.id}`
-  checkbox.id = labelId
-  label.htmlFor = labelId
-  label.textContent = todo.title
+function renderBoard() {
+  const day = days[selected]
+  ui.board.replaceChildren()
+  if (!day) {
+    ui.dayLabel.textContent = ''
+    return
+  }
 
-  const remove = document.createElement('button')
-  remove.className = 'icon-btn'
-  remove.type = 'button'
-  remove.setAttribute('aria-label', 'Xóa việc')
-  remove.textContent = 'Xóa'
-  remove.addEventListener('click', () => {
-    todos = removeTodo(todos, todo.id)
-    persist()
-  })
+  ui.dayLabel.textContent = `${day.weekday}, ${day.date}`
 
-  item.append(checkbox, label, remove)
-  return item
+  const table = document.createElement('table')
+  table.className = 'kq'
+
+  const thead = document.createElement('thead')
+  const headRow = document.createElement('tr')
+  const corner = document.createElement('th')
+  corner.className = 'corner'
+  corner.scope = 'col'
+  headRow.append(corner)
+  for (const province of day.provinces) {
+    const th = document.createElement('th')
+    th.scope = 'col'
+    const name = document.createElement('span')
+    name.className = 'p-name'
+    name.textContent = province.name
+    const code = document.createElement('span')
+    code.className = 'p-code'
+    code.textContent = province.code
+    th.append(name, code)
+    headRow.append(th)
+  }
+  thead.append(headRow)
+
+  const tbody = document.createElement('tbody')
+  for (const [key, label] of ROW_LABELS) {
+    // skip a prize nobody drew, instead of leaving a blank row
+    if (!day.provinces.some((p) => p.prizes[key]?.length)) {
+      continue
+    }
+    const tr = document.createElement('tr')
+    if (key === 'db') {
+      tr.className = 'is-special'
+    }
+    const th = document.createElement('th')
+    th.scope = 'row'
+    th.textContent = label
+    tr.append(th)
+    for (const province of day.provinces) {
+      const td = document.createElement('td')
+      for (const number of province.prizes[key] ?? []) {
+        const line = document.createElement('span')
+        line.className = 'num'
+        line.textContent = number
+        td.append(line)
+      }
+      tr.append(td)
+    }
+    tbody.append(tr)
+  }
+
+  table.append(thead, tbody)
+  ui.board.append(table)
+}
+
+async function load(showSpinner: boolean) {
+  if (loading) {
+    return
+  }
+  loading = true
+  ui.error.hidden = true
+  if (showSpinner) {
+    ui.refresh.disabled = true
+    ui.refresh.textContent = 'Đang tải…'
+  }
+
+  try {
+    const next = await fetchDays()
+    days = next
+    selected = 0
+    renderTabs()
+    renderBoard()
+  } catch (error) {
+    ui.error.textContent =
+      error instanceof Error ? error.message : 'Không tải được kết quả'
+    ui.error.hidden = false
+  } finally {
+    loading = false
+    ui.refresh.disabled = false
+    ui.refresh.textContent = 'Tải lại'
+  }
 }
 
 async function refreshBuildLabel() {
@@ -175,31 +209,8 @@ async function runCheck(showIdleToast: boolean) {
   }
 }
 
-ui.form.addEventListener('submit', (event) => {
-  event.preventDefault()
-  const todo = createTodo(ui.input.value)
-  if (!todo) {
-    return
-  }
-  todos = [todo, ...todos]
-  ui.input.value = ''
-  persist()
-  ui.input.focus()
-})
-
-for (const button of filterButtons) {
-  button.addEventListener('click', () => {
-    const next = button.dataset.filter
-    if (next === 'all' || next === 'open' || next === 'done') {
-      filter = next
-      render()
-    }
-  })
-}
-
-ui.clearDone.addEventListener('click', () => {
-  todos = clearDone(todos)
-  persist()
+ui.refresh.addEventListener('click', () => {
+  void load(true)
 })
 
 ui.download.addEventListener('click', () => {
@@ -223,7 +234,7 @@ ui.checkUpdate.addEventListener('click', () => {
   void runCheck(true)
 })
 
-render()
+void load(true)
 
 if (Capacitor.isNativePlatform()) {
   void markAppReady()

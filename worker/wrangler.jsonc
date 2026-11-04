@@ -1,0 +1,10 @@
+{
+  "name": "xsmn-api",
+  "main": "src/index.js",
+  "compatibility_date": "2026-10-01",
+  "kv_namespaces": [{ "binding": "CACHE", "id": "5b0199a6d9174752a60e9cd4669c7ff2" }],
+  // 17:00 ICT (10:00 UTC). XSMN draws 16:10-16:40 ICT, so at 17:00 today's results are final
+  // and this run commits the day to permanent KV + adds it to the index. Users hitting the API
+  // before then still get today live (5-minute TTL), so the cron is a guarantee, not the only path.
+  "triggers": { "crons": ["0 10 * * *"] }
+}
