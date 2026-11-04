@@ -151,6 +151,8 @@ function renderBoard() {
 
   const table = document.createElement('table')
   table.className = 'kq'
+  table.style.setProperty('--cols', String(day.provinces.length))
+  table.setAttribute('aria-label', `Kết quả xổ số miền Nam ${day.weekday}, ${day.date}`)
 
   const thead = document.createElement('thead')
   const headRow = document.createElement('tr')
@@ -190,12 +192,16 @@ function renderBoard() {
     tr.append(th)
     for (const province of day.provinces) {
       const td = document.createElement('td')
+      td.className = `cell-${key}`
+      const numWrap = document.createElement('div')
+      numWrap.className = `num-wrap is-${key}`
       for (const number of province.prizes[key] ?? []) {
         const line = document.createElement('span')
         line.className = 'num'
         line.textContent = number
-        td.append(line)
+        numWrap.append(line)
       }
+      td.append(numWrap)
       tr.append(td)
     }
     tbody.append(tr)
@@ -253,6 +259,13 @@ async function loadRecent() {
 
 ui.pickDate.addEventListener('submit', (event) => {
   event.preventDefault()
+  const iso = ui.dateInput.value
+  if (iso) {
+    void showDay(iso)
+  }
+})
+
+ui.dateInput.addEventListener('change', () => {
   const iso = ui.dateInput.value
   if (iso) {
     void showDay(iso)

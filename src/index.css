@@ -1,44 +1,86 @@
 :root {
-  --primary: #dc2626;
-  --primary-hover: #b91c1c;
-  --primary-surface: #fef2f2;
-  --primary-border: #fecaca;
-  --accent-gold: #d97706;
-  --gold-surface: #fffbeb;
-  --gold-border: #fde68a;
+  color-scheme: light;
+  /* ==========================================================================
+     Authentic Vietnamese Lottery Palette (Minh Ngọc / XSKT Brand Colors)
+     ========================================================================== */
+  --primary: #c21807;          /* Sắc đỏ son truyền thống đặc trưng vé số */
+  --primary-hover: #9e1204;
+  --primary-dark: #800c02;
+  --primary-surface: #fff1f0;
+  --primary-border: #ffccc7;
+  
+  --accent-gold: #d48806;
+  --gold-surface: #fffbe6;
+  --gold-border: #ffe58f;
+  --accent-blue: #096dd9;      /* Sắc xanh giải 8 */
+  --blue-surface: #e6f7ff;
+  --blue-border: #91d5ff;
 
-  --bg: #f8fafc;
+  --bg: #f0f2f5;
   --card: #ffffff;
-  --border: #e2e8f0;
+  --border: #d9d9d9;
+  --border-light: #f0f0f0;
   --header-bg: #ffffff;
 
-  --text: #0f172a;
-  --text-muted: #64748b;
-  --text-sub: #94a3b8;
+  --text: #141414;
+  --text-muted: #595959;
+  --text-sub: #8c8c8c;
 
-  --table-head-bg: #f1f5f9;
-  --table-label-bg: #f8fafc;
-  --table-stripe: #fafbfc;
+  --table-head-bg: #8c0000;    /* Header đài đỏ đô truyền thống */
+  --table-head-text: #ffffff;
+  --table-label-bg: #fafafa;
+  --table-label-border: #d9d9d9;
+  --table-stripe: #fafcff;
 
-  --special-bg: #fff1f2;
-  --special-border: #fecdd3;
-  --special-text: #e11d48;
+  --special-bg: #fff1f0;       /* Highlight Giải Đặc Biệt */
+  --special-border: #ffa39e;
+  --special-text: #cf1322;
 
-  --top-bg: #fffbeb;
-  --top-border: #fef08a;
-  --top-text: #b45309;
+  --top-bg: #f9f0ff;           /* Highlight Giải Tám */
+  --top-border: #d3adf7;
+  --top-text: #1d39c4;
 
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.04);
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.12);
 
-  --radius-sm: 6px;
-  --radius: 10px;
-  --radius-lg: 14px;
+  --radius-sm: 4px;
+  --radius: 8px;
+  --radius-lg: 12px;
   --radius-pill: 9999px;
 
   --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  --font-mono: ui-monospace, "SF Mono", "Roboto Mono", Menlo, Consolas, monospace;
+  --font-mono: "SF Mono", "Roboto Mono", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+
+  /* ==========================================================================
+     Fluid Typography System - Enlarged & Proportional across viewports
+     Formula: clamp(min, intercept + slope*vw, max)
+     ========================================================================== */
+  --fs-2xs: clamp(0.75rem, 0.68rem + 0.35vw, 0.90rem);  /* Nhãn phụ, mã đài */
+  --fs-xs: clamp(0.82rem, 0.75rem + 0.40vw, 1.00rem);   /* Gợi ý, chữ nhỏ */
+  --fs-sm: clamp(0.92rem, 0.82rem + 0.45vw, 1.10rem);   /* Tên giải G8..G1 */
+  --fs-base: clamp(1.02rem, 0.92rem + 0.50vw, 1.25rem); /* Nút bấm, input */
+  --fs-md: clamp(1.12rem, 1.00rem + 0.60vw, 1.40rem);   /* Thông báo lỗi */
+  --fs-lg: clamp(1.22rem, 1.08rem + 0.70vw, 1.55rem);   /* Tên đài tỉnh */
+  --fs-xl: clamp(1.35rem, 1.18rem + 0.90vw, 1.80rem);   /* Tiêu đề trang */
+  --fs-2xl: clamp(1.65rem, 1.35rem + 1.40vw, 2.50rem);  /* Số Giải Đặc Biệt */
+
+  /* ==========================================================================
+     Fluid Spacing & Component Dimensions
+     ========================================================================== */
+  --space-3xs: clamp(0.18rem, 0.12rem + 0.25vw, 0.35rem);
+  --space-2xs: clamp(0.32rem, 0.22rem + 0.35vw, 0.55rem);
+  --space-xs:  clamp(0.48rem, 0.35rem + 0.45vw, 0.80rem);
+  --space-sm:  clamp(0.70rem, 0.50rem + 0.55vw, 1.10rem);
+  --space-md:  clamp(0.95rem, 0.75rem + 0.75vw, 1.50rem);
+  --space-lg:  clamp(1.25rem, 1.00rem + 1.00vw, 1.95rem);
+  --space-xl:  clamp(1.85rem, 1.45rem + 1.30vw, 2.85rem);
+
+  /* Controls */
+  --input-date-width: clamp(10.2rem, 30vw, 14.5rem);
+  --control-min-height: clamp(2.85rem, 2.65rem + 0.7vw, 3.35rem);
+  --chip-min-width: clamp(5.4rem, 4.6rem + 2.2vw, 7.2rem);
+  --table-col-prize-width: clamp(5.6rem, 4.8rem + 2.6vw, 7.2rem);
 
   font-family: var(--font-sans);
   color: var(--text);
@@ -70,7 +112,6 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* Accessibility */
 .sr-only {
   position: absolute;
   width: 1px;
@@ -87,167 +128,195 @@ button,
 input {
   font: inherit;
   color: inherit;
+  touch-action: manipulation;
 }
 
-/* Header */
+/* ==========================================================================
+   Header - Full Width & Authentic Lottery Banner
+   ========================================================================== */
 .app-header {
   position: sticky;
   top: 0;
-  z-index: 20;
-  background: var(--header-bg);
-  border-bottom: 1px solid var(--border);
-  box-shadow: var(--shadow-sm);
-  padding-top: max(0.4rem, env(safe-area-inset-top));
-  padding-left: max(0.5rem, env(safe-area-inset-left));
-  padding-right: max(0.5rem, env(safe-area-inset-right));
+  z-index: 30;
+  background: #ffffff;
+  border-bottom: 2px solid #8c0000;
+  box-shadow: 0 2px 8px rgba(140, 0, 0, 0.12);
+  padding-top: calc(env(safe-area-inset-top, 0px) + var(--space-xs));
+  padding-left: max(var(--space-sm), env(safe-area-inset-left, 0px));
+  padding-right: max(var(--space-sm), env(safe-area-inset-right, 0px));
 }
 
 .header-inner {
-  width: min(960px, calc(100% - 1rem));
-  margin-inline: auto;
+  width: 100%;
+  margin-inline: 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 0.35rem;
-  padding: 0.45rem 0;
+  gap: var(--space-xs);
+  padding: var(--space-xs) 0;
 }
 
 .brand {
   display: flex;
   align-items: center;
-  gap: 0.45rem;
+  gap: var(--space-xs);
   min-width: 0;
   flex-shrink: 1;
 }
 
 .brand-icon {
-  width: 32px;
-  height: 32px;
-  border-radius: var(--radius-sm);
-  background: linear-gradient(135deg, #ef4444, #b91c1c);
+  width: clamp(2.3rem, 1.9rem + 1.5vw, 3.2rem);
+  height: clamp(2.3rem, 1.9rem + 1.5vw, 3.2rem);
+  border-radius: var(--radius);
+  background: linear-gradient(135deg, #c21807, #800c02);
   color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  box-shadow: 0 2px 6px rgba(220, 38, 38, 0.3);
+  box-shadow: 0 3px 8px rgba(194, 24, 7, 0.4);
+}
+
+.brand-icon svg {
+  width: clamp(1.3rem, 1.1rem + 0.9vw, 1.8rem);
+  height: clamp(1.3rem, 1.1rem + 0.9vw, 1.8rem);
 }
 
 .brand-meta {
   display: flex;
   align-items: center;
-  gap: 0.35rem;
+  gap: var(--space-2xs);
   min-width: 0;
 }
 
 .brand-title {
-  font-size: 1.05rem;
-  font-weight: 800;
-  color: var(--text);
-  letter-spacing: -0.01em;
+  font-size: var(--fs-xl);
+  font-weight: 900;
+  color: #8c0000;
+  letter-spacing: -0.02em;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  text-transform: uppercase;
+}
+
+.brand-title-short {
+  display: none;
 }
 
 .brand-badge {
-  font-size: 0.65rem;
-  font-weight: 700;
-  color: var(--primary);
-  background: var(--primary-surface);
-  border: 1px solid var(--primary-border);
-  padding: 2px 6px;
+  font-size: var(--fs-2xs);
+  font-weight: 800;
+  color: #ffffff;
+  background: #c21807;
+  padding: 2px 8px;
   border-radius: var(--radius-pill);
   text-transform: uppercase;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.04em;
   flex-shrink: 0;
+  animation: pulse-badge 2s infinite ease-in-out;
 }
 
-@media (max-width: 480px) {
+@keyframes pulse-badge {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.85; transform: scale(0.96); }
+}
+
+@media (max-width: 460px) {
   .brand-badge {
     display: none;
   }
 }
 
-/* Pick date form */
+@media (max-width: 350px) {
+  .brand-title-full {
+    display: none;
+  }
+  .brand-title-short {
+    display: inline;
+  }
+}
+
+/* ==========================================================================
+   Pick Date Form - Enlarged & High Contrast
+   ========================================================================== */
 .pick-date-form {
   display: flex;
   align-items: center;
-  gap: 0.3rem;
+  gap: var(--space-2xs);
   flex-shrink: 0;
 }
 
 .pick-date-form input[type="date"] {
-  font-size: 0.82rem;
-  font-weight: 600;
-  padding: 0.35rem 0.45rem;
-  width: 7.2rem;
-  min-height: 38px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  background: var(--bg);
-  color: var(--text);
+  font-size: var(--fs-base);
+  font-weight: 750;
+  padding: var(--space-xs) var(--space-sm);
+  width: var(--input-date-width);
+  min-width: 10.2rem;
+  min-height: var(--control-min-height);
+  border: 1.5px solid #d9d9d9;
+  border-radius: var(--radius);
+  background: #ffffff;
+  color: #141414;
   font-variant-numeric: tabular-nums;
   outline: none;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  transition: all 0.2s ease;
+  color-scheme: light;
+}
+
+.pick-date-form input[type="date"]::-webkit-datetime-edit {
+  padding: 0;
+}
+
+.pick-date-form input[type="date"]::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  padding: 4px;
+  margin-left: 0.4rem;
+  opacity: 0.9;
+  filter: invert(12%) sepia(80%) saturate(6000%) hue-rotate(355deg) brightness(85%) contrast(110%);
 }
 
 .pick-date-form input[type="date"]:focus {
-  border-color: var(--primary);
-  box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.15);
+  border-color: #c21807;
+  box-shadow: 0 0 0 3px rgba(194, 24, 7, 0.2);
 }
 
 .pick-date-form button {
-  padding: 0.35rem 0.65rem;
-  min-height: 38px;
-  font-size: 0.82rem;
-  font-weight: 700;
-  border: 1px solid var(--primary);
-  border-radius: var(--radius-sm);
-  background: var(--primary);
+  padding: var(--space-xs) var(--space-lg);
+  min-height: var(--control-min-height);
+  min-width: 58px;
+  font-size: var(--fs-base);
+  font-weight: 800;
+  border: 1px solid #8c0000;
+  border-radius: var(--radius);
+  background: linear-gradient(135deg, #c21807, #8c0000);
   color: #ffffff;
   cursor: pointer;
-  transition: background 0.15s ease;
+  transition: all 0.2s ease;
   white-space: nowrap;
+  box-shadow: 0 2px 4px rgba(140, 0, 0, 0.25);
 }
 
 .pick-date-form button:hover {
-  background: var(--primary-hover);
+  background: linear-gradient(135deg, #a81405, #700000);
+  box-shadow: 0 3px 6px rgba(140, 0, 0, 0.35);
 }
 
-@media (max-width: 370px) {
-  .brand-icon {
-    width: 28px;
-    height: 28px;
-  }
-  .brand-title {
-    font-size: 0.92rem;
-  }
-  .pick-date-form input[type="date"] {
-    width: 6.6rem;
-    font-size: 0.75rem;
-    padding: 0.3rem 0.35rem;
-  }
-  .pick-date-form button {
-    padding: 0.3rem 0.5rem;
-    font-size: 0.78rem;
-  }
-}
-
-/* Main Container */
+/* ==========================================================================
+   Main Container - No Limit, Edge-to-Edge Responsive
+   ========================================================================== */
 .app-main {
-  width: min(960px, calc(100% - 1.25rem));
-  margin-inline: auto;
-  padding-left: max(0.25rem, env(safe-area-inset-left));
-  padding-right: max(0.25rem, env(safe-area-inset-right));
-  padding-bottom: max(2rem, env(safe-area-inset-bottom));
+  width: 100%;
+  margin-inline: 0;
+  padding-left: max(var(--space-sm), env(safe-area-inset-left, 0px));
+  padding-right: max(var(--space-sm), env(safe-area-inset-right, 0px));
+  padding-bottom: max(var(--space-xl), env(safe-area-inset-bottom, 0px));
 }
 
-/* Day tabs (7 recent days) */
 #day-tabs {
   display: flex;
-  gap: 0.5rem;
-  padding: 0.75rem 0 0.5rem;
+  gap: var(--space-xs);
+  padding: var(--space-sm) 0 var(--space-xs);
   overflow-x: auto;
   scrollbar-width: none;
   -webkit-overflow-scrolling: touch;
@@ -263,133 +332,147 @@ input {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 0.45rem 0.75rem;
-  min-width: 4.4rem;
-  border: 1px solid var(--border);
+  padding: var(--space-xs) var(--space-md);
+  min-width: var(--chip-min-width);
+  border: 1.5px solid #d9d9d9;
   border-radius: var(--radius);
-  background: var(--card);
+  background: #ffffff;
   color: var(--text);
   box-shadow: var(--shadow-sm);
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: all 0.2s ease;
 }
 
 .chip:hover {
-  border-color: var(--primary-border);
-  background: var(--primary-surface);
+  border-color: #ffa39e;
+  background: #fff1f0;
 }
 
 .chip-sub {
-  font-size: 0.68rem;
-  font-weight: 700;
+  font-size: var(--fs-xs);
+  font-weight: 750;
   color: var(--text-muted);
   text-transform: uppercase;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.03em;
 }
 
 .chip-main {
-  font-size: 0.92rem;
-  font-weight: 700;
+  font-size: var(--fs-lg);
+  font-weight: 850;
   font-variant-numeric: tabular-nums;
-  margin-top: 1px;
+  margin-top: 2px;
 }
 
 .chip.is-on {
-  border-color: var(--primary);
-  background: linear-gradient(135deg, #ef4444, #dc2626);
+  border-color: #8c0000;
+  background: linear-gradient(135deg, #c21807, #8c0000);
   color: #ffffff;
-  box-shadow: 0 3px 8px rgba(220, 38, 38, 0.28);
+  box-shadow: 0 4px 10px rgba(140, 0, 0, 0.35);
 }
 
 .chip.is-on .chip-sub {
-  color: rgba(255, 255, 255, 0.9);
+  color: #ffe58f;
 }
 
 .chip.is-on .chip-main {
   color: #ffffff;
 }
 
-/* Status / Info bar */
+/* ==========================================================================
+   Status Row
+   ========================================================================== */
 .status-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 0.5rem;
-  padding: 0.4rem 0.1rem 0.6rem;
+  gap: var(--space-xs);
+  padding: var(--space-xs) 0.1rem var(--space-sm);
 }
 
 .day-title-wrap {
   display: flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: var(--space-xs);
 }
 
 .day-icon {
-  color: var(--primary);
+  width: clamp(18px, 15px + 0.6vw, 24px);
+  height: clamp(18px, 15px + 0.6vw, 24px);
+  color: #c21807;
   flex-shrink: 0;
 }
 
 #day-label {
-  font-size: 1.05rem;
-  font-weight: 800;
-  color: var(--text);
+  font-size: var(--fs-lg);
+  font-weight: 900;
+  color: #8c0000;
   letter-spacing: -0.01em;
+  text-transform: capitalize;
 }
 
 .scroll-hint {
   display: flex;
   align-items: center;
-  gap: 0.25rem;
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: var(--text-muted);
+  gap: var(--space-3xs);
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  color: #8c0000;
+  background: #fff1f0;
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  border: 1px solid #ffa39e;
 }
 
-@media (min-width: 640px) {
+@media (min-width: 768px) {
   .scroll-hint {
     display: none;
   }
 }
 
-/* Error message */
 #error {
-  margin: 0.5rem 0 1rem;
-  padding: 0.75rem 1rem;
-  border: 1px solid #fecaca;
+  margin: var(--space-xs) 0 var(--space-md);
+  padding: var(--space-sm) var(--space-md);
+  border: 1.5px solid #ffccc7;
   border-radius: var(--radius);
-  background: #fef2f2;
-  color: #b91c1c;
-  font-size: 0.95rem;
-  font-weight: 600;
+  background: #fff1f0;
+  color: #cf1322;
+  font-size: var(--fs-base);
+  font-weight: 700;
 }
 
-/* Results Board */
+/* ==========================================================================
+   Authentic Vietnamese Lottery Board (Minh Ngọc / XSKT Table Layout)
+   ========================================================================== */
 .board-container {
+  width: 100%;
   container-type: inline-size;
   overflow-x: auto;
   overflow-y: hidden;
   -webkit-overflow-scrolling: touch;
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--border);
-  background: var(--card);
-  box-shadow: var(--shadow);
+  touch-action: pan-x pan-y;
+  overscroll-behavior-x: contain;
+  border-radius: var(--radius);
+  border: 1.5px solid #8c0000;
+  background: #ffffff;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
   scrollbar-width: thin;
 }
 
 .kq {
   width: 100%;
-  min-width: 440px;
-  border-collapse: separate;
-  border-spacing: 0;
+  min-width: calc(var(--table-col-prize-width) + (var(--cols, 3) * clamp(135px, 28vw, 240px)));
+  border-collapse: collapse;
   table-layout: fixed;
+  text-align: center;
 }
 
-/* Table Headers */
+/* Header đài: Đỏ đô truyền thống, chữ trắng sang trọng */
 .kq thead th {
-  background: var(--table-head-bg);
-  padding: 0.65rem 0.5rem;
-  border-bottom: 2px solid var(--border);
-  border-right: 1px solid var(--border);
+  background: #8c0000;
+  color: #ffffff;
+  padding: var(--space-sm) var(--space-xs);
+  border-bottom: 2px solid #5a0000;
+  border-right: 1px solid #a80000;
   text-align: center;
 }
 
@@ -399,62 +482,67 @@ input {
 
 .p-name {
   display: block;
-  font-size: 1.05rem;
-  font-weight: 800;
-  color: var(--primary);
+  font-size: var(--fs-lg);
+  font-weight: 900;
+  color: #ffffff;
   letter-spacing: -0.01em;
+  text-transform: uppercase;
+  word-break: break-word;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
 }
 
 .p-code {
-  display: block;
-  font-size: 0.72rem;
-  font-weight: 700;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  margin-top: 2px;
-  letter-spacing: 0.03em;
+  display: inline-block;
+  font-size: var(--fs-2xs);
+  font-weight: 750;
+  color: #ffe58f;
+  background: rgba(0, 0, 0, 0.25);
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+  margin-top: 4px;
+  letter-spacing: 0.04em;
 }
 
-/* Sticky First Column (Prize column) */
+/* Cột Giải cố định bên trái (Sticky Column) */
 .kq thead .corner,
 .kq tbody th {
   position: sticky;
   left: 0;
-  z-index: 2;
-  width: 82px;
-  min-width: 82px;
-  max-width: 90px;
-  background: var(--table-label-bg);
-  border-right: 2px solid var(--border);
-  border-bottom: 1px solid var(--border);
-  font-size: 0.85rem;
-  font-weight: 700;
-  color: var(--text-muted);
+  z-index: 10;
+  width: var(--table-col-prize-width);
+  min-width: var(--table-col-prize-width);
+  max-width: calc(var(--table-col-prize-width) + 0.6rem);
+  background: #f5f5f5;
+  border-right: 2px solid #8c0000;
+  border-bottom: 1px solid #d9d9d9;
+  font-size: var(--fs-sm);
+  font-weight: 850;
+  color: #262626;
   text-align: center;
-  padding: 0.6rem 0.4rem;
+  padding: var(--space-sm) var(--space-2xs);
   white-space: nowrap;
-  box-shadow: 2px 0 5px -2px rgba(0, 0, 0, 0.08);
+  box-shadow: 3px 0 6px -2px rgba(0, 0, 0, 0.12);
 }
 
 .kq thead .corner {
-  z-index: 4;
-  background: var(--table-head-bg);
-  border-bottom: 2px solid var(--border);
-  font-size: 0.8rem;
-  font-weight: 800;
+  z-index: 20;
+  background: #700000;
+  color: #ffe58f;
+  border-bottom: 2px solid #5a0000;
+  font-size: var(--fs-base);
+  font-weight: 900;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--text-muted);
+  letter-spacing: 0.08em;
 }
 
 /* Cells */
 .kq tbody td {
-  padding: 0.55rem 0.4rem;
-  border-bottom: 1px solid var(--border);
-  border-right: 1px solid var(--border);
+  padding: var(--space-xs) var(--space-2xs);
+  border-bottom: 1px solid #e8e8e8;
+  border-right: 1px solid #e8e8e8;
   text-align: center;
   vertical-align: middle;
-  background: var(--card);
+  background: #ffffff;
 }
 
 .kq tbody td:last-child {
@@ -467,75 +555,102 @@ input {
 }
 
 .kq tbody tr:nth-child(even):not(.is-special):not(.is-top) td {
-  background: var(--table-stripe);
+  background: #fafafa;
 }
 
-/* Number display */
+/* Number Container - Strictly 1 number per line across all prizes */
+.num-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3xs);
+  width: 100%;
+}
+
+.num-wrap.is-g4,
+.num-wrap.is-g6,
+.num-wrap.is-g3 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3xs);
+  width: 100%;
+}
+
+/* ==========================================================================
+   Typography Chữ số - Chuẩn sắc nét, to rõ, dễ dò từng hàng
+   ========================================================================== */
 .num {
   display: block;
+  width: 100%;
+  text-align: center;
+  white-space: nowrap;
   font-family: var(--font-mono);
-  font-size: clamp(0.95rem, 3.6cqi, 1.18rem);
-  font-weight: 700;
-  line-height: 1.35;
-  letter-spacing: 0.03em;
+  font-size: clamp(1.18rem, 1.02rem + 1.0vw, 1.65rem);
+  font-weight: 800;
+  line-height: 1.4;
+  letter-spacing: 0.05em;
   font-variant-numeric: tabular-nums;
-  color: var(--text);
-  padding: 1px 0;
+  color: #141414;
+  padding: 1px 4px;
 }
 
-/* Top prize (Giải tám) */
+/* Giải tám (Mở đầu - Sắc xanh navy hoặc đỏ son nổi bật) */
 .kq tbody tr.is-top td {
-  background: var(--top-bg);
+  background: #f0f7ff;
 }
 
 .kq tbody tr.is-top th {
-  background: var(--top-bg);
-  color: var(--top-text);
-  font-weight: 800;
+  background: #e6f4ff;
+  color: #0050b3;
+  font-weight: 900;
 }
 
 .kq tbody tr.is-top .num {
-  font-size: clamp(1.05rem, 4cqi, 1.3rem);
-  font-weight: 800;
-  color: var(--top-text);
+  font-size: clamp(1.35rem, 1.15rem + 1.3vw, 1.95rem);
+  font-weight: 900;
+  color: #0958d9;
 }
 
-/* Special Prize (Giải đặc biệt) */
+/* Giải Đặc Biệt (Tâm điểm tờ vé số - Đỏ rực rỡ, chữ số lớn nhất) */
 .kq tbody tr.is-special td {
-  background: var(--special-bg);
+  background: #fff1f0;
 }
 
 .kq tbody tr.is-special th {
-  background: var(--special-bg);
-  color: var(--special-text);
-  font-weight: 800;
+  background: #ffe8e6;
+  color: #cf1322;
+  font-weight: 950;
 }
 
 .kq tbody tr.is-special .num {
-  font-size: clamp(1.15rem, 4.6cqi, 1.5rem);
-  font-weight: 850;
-  color: var(--special-text);
-  letter-spacing: 0.05em;
+  font-size: clamp(1.60rem, 1.30rem + 1.8vw, 2.50rem);
+  font-weight: 950;
+  color: #cf1322;
+  letter-spacing: 0.08em;
+  text-shadow: 0 1px 1px rgba(207, 19, 34, 0.15);
 }
 
-/* Loading State */
+/* Loading & Toast */
 .board-loading {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 0.8rem;
-  min-height: 240px;
-  color: var(--text-muted);
-  font-size: 0.95rem;
-  font-weight: 600;
+  gap: var(--space-sm);
+  min-height: 280px;
+  color: #595959;
+  font-size: var(--fs-base);
+  font-weight: 700;
 }
 
 .spinner {
-  width: 32px;
-  height: 32px;
-  border: 3px solid var(--border);
-  border-top-color: var(--primary);
+  width: 40px;
+  height: 40px;
+  border: 4px solid #f0f0f0;
+  border-top-color: #c21807;
   border-radius: 50%;
   animation: spin 0.75s linear infinite;
 }
@@ -546,130 +661,20 @@ input {
   }
 }
 
-/* Toast */
 #toast {
   position: fixed;
-  bottom: max(1.2rem, calc(env(safe-area-inset-bottom) + 0.6rem));
+  bottom: max(1.5rem, calc(env(safe-area-inset-bottom, 0px) + 0.8rem));
   left: 50%;
   transform: translateX(-50%);
-  padding: 0.6rem 1.2rem;
+  padding: var(--space-xs) var(--space-lg);
   border-radius: var(--radius-pill);
-  background: #0f172a;
+  background: #141414;
   color: #ffffff;
-  font-size: 0.88rem;
-  font-weight: 600;
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.35);
+  font-size: var(--fs-base);
+  font-weight: 700;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35);
   z-index: 100;
   white-space: nowrap;
 }
 
-/* Dark mode */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --primary: #f87171;
-    --primary-hover: #ef4444;
-    --primary-surface: #2b1318;
-    --primary-border: #4c1d24;
-    --accent-gold: #fbbf24;
-    --gold-surface: #261e0f;
-    --gold-border: #453416;
 
-    --bg: #0b0f17;
-    --card: #131b26;
-    --border: #1e293b;
-    --header-bg: #131b26;
-
-    --text: #f8fafc;
-    --text-muted: #94a3b8;
-    --text-sub: #64748b;
-
-    --table-head-bg: #182232;
-    --table-label-bg: #151d2b;
-    --table-stripe: #0f1622;
-
-    --special-bg: #2d1217;
-    --special-border: #4c1d24;
-    --special-text: #f87171;
-
-    --top-bg: #291e0c;
-    --top-border: #453216;
-    --top-text: #fbbf24;
-
-    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
-    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.35);
-  }
-
-  .pick-date-form input[type="date"] {
-    color-scheme: dark;
-  }
-
-  #error {
-    background: #2b1115;
-    border-color: #4c1d24;
-    color: #fca5a5;
-  }
-
-  #toast {
-    background: #f8fafc;
-    color: #0f172a;
-  }
-}
-
-/* Tablet & Desktop sizing */
-@media (min-width: 640px) {
-  .brand-title {
-    font-size: 1.25rem;
-  }
-
-  .brand-icon {
-    width: 38px;
-    height: 38px;
-  }
-
-  .pick-date-form input[type="date"] {
-    font-size: 0.9rem;
-    padding: 0.45rem 0.75rem;
-  }
-
-  .pick-date-form button {
-    font-size: 0.9rem;
-    padding: 0.45rem 1rem;
-  }
-
-  .chip {
-    padding: 0.5rem 0.95rem;
-    min-width: 4.8rem;
-  }
-
-  .chip-sub {
-    font-size: 0.72rem;
-  }
-
-  .chip-main {
-    font-size: 0.98rem;
-  }
-
-  #day-label {
-    font-size: 1.15rem;
-  }
-
-  .p-name {
-    font-size: 1.15rem;
-  }
-
-  .p-code {
-    font-size: 0.78rem;
-  }
-
-  .num {
-    font-size: 1.2rem;
-  }
-
-  .kq tbody tr.is-top .num {
-    font-size: 1.35rem;
-  }
-
-  .kq tbody tr.is-special .num {
-    font-size: 1.6rem;
-  }
-}

@@ -25,7 +25,10 @@ export type GithubRelease = {
 export const OTA_ASSET_NAME = 'ota-bundle.zip'
 
 export function githubRepo(): string {
-  return import.meta.env.OTA_GITHUB_REPO?.trim() ?? ''
+  return (
+    import.meta.env.OTA_GITHUB_REPO?.trim() ||
+    'ngochung04/react-capacitor-base'
+  )
 }
 
 export function versionFromTag(tagName: string): string {
