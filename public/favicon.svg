@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <!-- Background Gradient -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#e52d27"/>
+      <stop offset="100%" stop-color="#b31217"/>
+    </linearGradient>
+
+    <!-- Gold Ticket Gradient -->
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fff1b8"/>
+      <stop offset="50%" stop-color="#ffd666"/>
+      <stop offset="100%" stop-color="#d48806"/>
+    </linearGradient>
+
+    <!-- Ticket Body Gradient -->
+    <linearGradient id="ticketGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#fff7e6"/>
+    </linearGradient>
+
+    <filter id="dropShadow" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#5c0000" flood-opacity="0.45"/>
+    </filter>
+  </defs>
+
+  <!-- App Icon Base -->
+  <rect width="512" height="512" rx="112" fill="url(#bgGrad)"/>
+  
+  <!-- Subtle inner border -->
+  <rect x="12" y="12" width="488" height="488" rx="100" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="4"/>
+
+  <!-- Main Lucky Lottery Ticket -->
+  <g transform="translate(256, 256) rotate(-12) translate(-256, -256)" filter="url(#dropShadow)">
+    <!-- Ticket Body -->
+    <path d="M 120 160 
+             L 392 160 
+             A 28 28 0 0 1 392 216 
+             L 392 296 
+             A 28 28 0 0 1 392 352 
+             L 120 352 
+             A 28 28 0 0 1 120 296 
+             L 120 216 
+             A 28 28 0 0 1 120 160 Z" 
+          fill="url(#ticketGrad)" stroke="#ffd666" stroke-width="6"/>
+
+    <!-- Gold Header Ribbon on Ticket -->
+    <path d="M 120 160 L 392 160 L 392 205 L 120 205 Z" fill="url(#goldGrad)"/>
+    <text x="256" y="192" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="22" font-weight="900" fill="#8c0000" text-anchor="middle" letter-spacing="3">XỔ SỐ KIẾN THIẾT</text>
+
+    <!-- Perforated Tear Line -->
+    <line x1="320" y1="205" x2="320" y2="352" stroke="#d48806" stroke-width="4" stroke-dasharray="8 8"/>
+
+    <!-- Lucky Star Badge -->
+    <circle cx="220" cy="278" r="46" fill="#fff1f0" stroke="#ff4d4f" stroke-width="3"/>
+    
+    <!-- Bold XSMN Text -->
+    <text x="220" y="270" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="24" font-weight="900" fill="#c21807" text-anchor="middle">XSMN</text>
+    <text x="220" y="296" font-family="'SF Mono', 'Roboto Mono', monospace" font-size="19" font-weight="850" fill="#cf1322" text-anchor="middle" letter-spacing="1">68·86</text>
+
+    <!-- Ticket Stub Content -->
+    <text x="356" y="255" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="14" font-weight="800" fill="#8c0000" text-anchor="middle">GIẢI</text>
+    <text x="356" y="285" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="26" font-weight="900" fill="#c21807" text-anchor="middle">ĐB</text>
+    <text x="356" y="325" font-family="'SF Mono', 'Roboto Mono', monospace" font-size="13" font-weight="700" fill="#8c8c8c" text-anchor="middle">2026</text>
+  </g>
+</svg>

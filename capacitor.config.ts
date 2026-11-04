@@ -2,7 +2,7 @@ import type { CapacitorConfig } from '@capacitor/cli'
 
 const config: CapacitorConfig = {
   appId: 'com.example.starter',
-  appName: 'Starter App',
+  appName: 'Xổ Số Miền Nam',
   webDir: 'dist',
   backgroundColor: '#f8fafc',
   plugins: {
